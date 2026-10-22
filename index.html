@@ -656,7 +656,7 @@ body[data-p=in] .fab{display:flex}
   if(window.DT_HOSTED&&!window.DT_API&&!/[?&]demo=1/.test(location.search))return; /* erst verbinden, dann übernehmen (Adresse bleibt beim Neuladen erhalten) */
   var p=shareParse(raw);if(!p||!p.t)return;
   var key=String(raw).slice(0,200),last=LS('dt.share');
-  if(last&&last.k===key&&Date.now()-last.t<600000)return;
+  if(last&&last.k===key&&Date.now()-last.t<30000)return;
   LS('dt.share',{k:key,t:Date.now()});
   mt.value=p.t;ma.value='';mi.value=p.a||'';chk();open('mk');
  }
