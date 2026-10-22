@@ -654,7 +654,13 @@ body[data-p=in] .fab{display:flex}
  }
  function shareOpen(raw){
   if(window.DT_HOSTED&&!window.DT_API&&!/[?&]demo=1/.test(location.search))return; /* erst verbinden, dann übernehmen (Adresse bleibt beim Neuladen erhalten) */
-  var p=shareParse(raw);if(!p||!p.t)return;
+  var p=shareParse(raw);
+  if(!p||!p.t){ /* nichts Brauchbares im Link: Merken-Fenster leer öffnen und zeigen, was angekommen ist */
+   var rk=String(raw).slice(0,200),lr=LS('dt.share');if(lr&&lr.k===rk&&Date.now()-lr.t<30000)return;LS('dt.share',{k:rk,t:Date.now()});
+   mt.value='';ma.value='';mi.value='';chk();open('mk');
+   var e=$('snk');e.textContent='Kein Songtitel erkannt. Angekommen: '+String(raw).slice(0,120);e.classList.add('on');clearTimeout(st);st=setTimeout(function(){e.classList.remove('on')},15000);
+   return;
+  }
   var key=String(raw).slice(0,200),last=LS('dt.share');
   if(last&&last.k===key&&Date.now()-last.t<30000)return;
   LS('dt.share',{k:key,t:Date.now()});
