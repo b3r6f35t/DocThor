@@ -653,6 +653,7 @@ body[data-p=in] .fab{display:flex}
   return{t:t.replace(/[.!\s]+$/,''),a:''};
  }
  function shareOpen(raw){
+  if(window.DT_HOSTED&&!window.DT_API&&!/[?&]demo=1/.test(location.search))return; /* erst verbinden, dann übernehmen (Adresse bleibt beim Neuladen erhalten) */
   var p=shareParse(raw);if(!p||!p.t)return;
   var key=String(raw).slice(0,200),last=LS('dt.share');
   if(last&&last.k===key&&Date.now()-last.t<600000)return;
