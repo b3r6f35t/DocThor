@@ -944,6 +944,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
 
 <div class="sheet tall" id="tl" role="dialog" aria-label="Titelliste" style="z-index:22">
  <div class="t"><button class="cn" id="tlc">Abbrechen</button><b id="tlt">Titelliste</b><button class="go" id="tlg" disabled>Anlegen</button></div>
+ <div class="seg" id="tlseg"><button data-m="online">Online abgleichen</button><button data-m="self">Selbst eintragen</button></div>
  <div id="tlb"></div>
 </div>
 
@@ -2462,10 +2463,11 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  /* ---------- Titelliste ---------- */
  var TL={key:null,mode:'',rows:[],info:null,load:false,seq:0,txt:''};
  function tlDemo(){return {id:'1',total:4,tracks:[{n:1,t:'Waitin\' for the Bus',d:149,f:[],a:'',disc:1},{n:2,t:'Jesus Just Left Chicago',d:207,f:[],a:'',disc:1},{n:3,t:'Beer Drinkers & Hell Raisers',d:205,f:[],a:'',disc:1},{n:4,t:'Master of Sparks',d:189,f:['Gast Eins'],a:'',disc:1}]}}
+ function tlSeg(){[].forEach.call(document.querySelectorAll('#tlseg button'),function(b){b.classList.toggle('on',b.getAttribute('data-m')===TL.mode)})}
  function tlOpen(mode){
   var e=entryOf(ED?ED.key:TL.key);if(!e)return;TL={key:e.key,mode:mode,rows:[],info:null,load:false,seq:TL.seq+1,txt:''};
   var key=e.key;ED=null;render();
-  $('tlt').textContent='Titelliste';$('tlg').disabled=true;$('tlg').textContent='Anlegen';
+  $('tlt').textContent='Titelliste';$('tlg').disabled=true;$('tlg').textContent='Anlegen';tlSeg();
   if(mode==='self'){tlPaintSelf();openN('tl');setTimeout(function(){var t=$('tltx');if(t)t.focus()},350);return}
   TL.load=true;tlPaintOnline();openN('tl');
   var my=TL.seq,a=e.rec,M=maps();
@@ -2496,14 +2498,15 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
   $('tltx').value=TL.txt||'';tlPreview();
  }
  function tlPreview(){
-  var rows=tlParse($('tltx').value);TL.txt=$('tltx').value;TL.rows=rows.map(function(t){return{t:t,on:true,ex:false}});
-  $('tlhint').textContent=rows.length?rows.length+' Titel erkannt':'Einfach die Titel untereinander eintippen oder einfügen.';
-  $('tlpv').innerHTML=rows.length?'<div class="card" style="margin-top:10px">'+rows.map(function(t){return '<div class="lr"><div class="nr">'+t.n+'</div><div class="m"><b>'+esc(t.t)+'</b></div></div>'}).join('')+'</div>':'';
-  $('tlg').disabled=!rows.length;$('tlg').textContent=rows.length?plural(rows.length,'Song','Songs')+' anlegen':'Anlegen';
+  var rows=tlParse($('tltx').value);TL.txt=$('tltx').value;var e0=entryOf(TL.key),have=e0?D.songs.filter(function(x){return x.album===e0.rec.id&&x.state!=='neu'}).map(function(x){return nrm(x.title)}):[];TL.rows=rows.map(function(t){return{t:t,on:true,ex:have.indexOf(nrm(t.t))>=0}});var nn=TL.rows.filter(function(r){return !r.ex}).length;
+  $('tlhint').textContent=rows.length?rows.length+' Titel erkannt'+(nn<rows.length?' · '+(rows.length-nn)+' schon angelegt':''):'Einfach die Titel untereinander eintippen oder einfügen.';
+  $('tlpv').innerHTML=rows.length?'<div class="card" style="margin-top:10px">'+TL.rows.map(function(r){var t=r.t;return '<div class="lr'+(r.ex?' fix':'')+'"><div class="nr">'+t.n+'</div><div class="m"><b>'+esc(t.t)+'</b></div></div>'}).join('')+'</div>':'';
+  $('tlg').disabled=!nn;$('tlg').textContent=nn?plural(nn,'Song','Songs')+' anlegen':'Anlegen';
  }
+ $('tlseg').addEventListener('click',function(e){var b=e.target.closest('button[data-m]');if(!b)return;var m=b.getAttribute('data-m');if(m===TL.mode)return;if(m==='self'){TL.seq++;TL.mode='self';TL.txt='';tlSeg();tlPaintSelf();setTimeout(function(){var t=$('tltx');if(t)t.focus()},50)}else{tlOpen('online')}});
  $('tlb').addEventListener('input',function(e){if(e.target.id==='tltx')tlPreview()});
  $('tlb').addEventListener('click',function(e){
-  if(e.target.closest('[data-tl=self]')){TL.mode='self';TL.txt='';tlPaintSelf();return}
+  if(e.target.closest('[data-tl=self]')){TL.mode='self';TL.txt='';tlSeg();tlPaintSelf();return}
   var r=e.target.closest('.lr[data-i]');if(!r||TL.mode!=='online')return;var x=TL.rows[Number(r.getAttribute('data-i'))];if(!x||x.ex)return;x.on=!x.on;tlPaintOnline();
  });
  $('tlc').onclick=function(){TL.seq++;closeN('tl')};
@@ -2851,7 +2854,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
   if(a==='pse'){openPk();e.stopPropagation();return}
   if(a==='zp'&&el.hasAttribute('data-ca')){var k=el.getAttribute('data-k');PULT.key=k;PULT.force=true;PULT.avoid=null;PX.inter=null;PX.f=null;PX.edit=null;ED=null;ST=[];document.querySelector('#tabs [data-p=in]').click();e.stopPropagation();return}
   if(a==='disk'&&el.hasAttribute('data-ca')){if(OFFL)return snackOff2();openDisk(el.getAttribute('data-id'));e.stopPropagation();return}
-  if(a==='tlerg'){if(OFFL)return snackOff2();var kk='a'+CA;menu('Titel ergänzen',[{t:'Online abgleichen',f:function(){ED={key:kk,f:'tl'};tlOpen('online')}},{t:'Selbst eintragen',f:function(){ED={key:kk,f:'tl'};tlOpen('self')}}]);e.stopPropagation();return}
+  if(a==='tlerg'){if(OFFL)return snackOff2();var kk='a'+CA;ED={key:kk,f:'tl'};tlOpen('online');e.stopPropagation();return}
   if(a==='solassen'){var al=albById(CA);if(!al)return;var old=cp(al),r=cp(al);cAdd(r,'tlk');put('albums',r);snack('Titelliste bleibt so','Rückgängig',function(){put('albums',old);render()});render();e.stopPropagation();return}
  },true);
  function snackOff2(){snack('Keine Verbindung · Änderungen gesperrt')}
