@@ -750,6 +750,50 @@ body.offl #pult{top:calc(env(safe-area-inset-top) + 84px)}
 #vmt{padding:4px 4px 8px;color:var(--s);font-size:14.5px}
 .stw .dt,.sz .dt,.sl2 .dt,.fo .dt{margin:0;vertical-align:0}
 #mnu:not(.on){box-shadow:none}
+.kc.sq{border-radius:12px}
+.lc.pc{width:52px;height:52px;border-radius:11px}
+.pcr{display:flex;gap:16px;align-items:center}
+.pcr button{color:var(--mint);font-weight:600;font-size:14px;text-transform:none;letter-spacing:0}
+.mi{width:24px;height:24px;border-radius:50%;background:#c0392b;color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+.mi svg{width:14px;height:14px;stroke-width:3}
+.rq{padding:4px 0 12px 36px;font-size:14px;color:var(--s)}
+.rq p{margin:0 0 8px}
+.rq div{display:flex;gap:10px}
+.rq button{flex:1;padding:10px;border-radius:12px;font-weight:700;font-size:14.5px}
+.rq .y{background:#2f6b3f;color:#fff}
+.rq .n{background:var(--seg);color:var(--tx)}
+.pbt .b{white-space:nowrap;padding:12px 6px;font-size:14.5px}
+.pcz{border-bottom:1px solid var(--ln)}.pcz:last-child{border:0}.pcz .lr{border:0}
+.pan{font-size:13px;color:var(--s);margin:0 4px 6px}
+#pd .seg{margin:6px 0 10px}
+#pd .seg button.on{background:var(--cd);color:var(--tx);box-shadow:0 0 0 1.5px var(--ac)}
+@media print{table.nc td.n{width:28px}}
+.ig .it.sel .im{box-shadow:0 0 0 3px var(--ac)}
+.ig .it.sel .im::after{content:"";position:absolute;right:6px;top:6px;width:20px;height:20px;border-radius:50%;background:var(--ac) url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3'%3E%3Cpath d='M6 12.5l4 4L18 8'/%3E%3C/svg%3E") center/14px no-repeat}
+.nfd{border:1.5px dashed var(--ln);border-radius:12px;padding:22px;text-align:center;color:var(--s);margin:10px 0 8px}
+.lk3{display:block;margin:0 auto;color:var(--mint);font-weight:600;font-size:15px;padding:6px}
+
+/* V32 Teil 5: Eckdaten und Hilfe im Menü */
+#mnu{overflow-y:auto}
+#mnu .hq{justify-content:space-between;font-size:16px;padding:12px 22px;gap:10px}
+#mnu .hq span{flex:1}
+#mnu .hq .chv{width:18px;height:18px;transition:transform .2s;flex:none}
+#mnu .hq.on .chv{transform:rotate(180deg)}
+#mnu .ht{padding:0 22px 14px;font-size:14px;line-height:1.5;color:var(--s)}
+#mnu .ht b{color:var(--t)}
+#mnu .ebar{margin:2px 22px 6px;height:6px;border-radius:3px;background:var(--cd)}
+#mnu .ebar i{display:block;height:100%;border-radius:3px;background:#2f6b3f}
+#mnu .emo{padding:6px 22px 4px;font-size:15px}
+#mnu .emo .bars{display:flex;gap:8px;align-items:flex-end;height:96px;margin-top:10px}
+#mnu .bc{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px}
+#mnu .bc i{display:block;width:100%;background:var(--ln);border-radius:4px 4px 0 0;min-height:2px}
+#mnu .bc i.cur{background:#2f6b3f}
+#mnu .bc small,#mnu .bc em{font-size:11px;color:var(--s);font-style:normal}
+#mnu .etop{display:flex;align-items:center;gap:10px;padding:7px 22px;font-size:15px}
+#mnu .etop span{flex:0 0 38%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#mnu .etop div{flex:1;height:6px;border-radius:3px;background:var(--cd)}
+#mnu .etop i{display:block;height:100%;border-radius:3px;background:#2f6b3f}
+#mnu .etop u{text-decoration:none;color:var(--s);font-size:15px;min-width:20px;text-align:right}
 </style>
 <div id="hd"><div id="hdg"></div><div id="hdr"></div></div>
 <div id="offs" hidden><i></i>Keine Verbindung · Änderungen gesperrt</div>
@@ -769,9 +813,9 @@ body.offl #pult{top:calc(env(safe-area-inset-top) + 84px)}
   <section class="page" id="p-se"><div id="se"></div></section>
   <section class="page" id="p-pl">
    <button id="pln" hidden></button>
-   <div class="hint" id="pls" style="margin:-2px 4px 12px">Sortiert nach Datum, neueste zuerst</div>
+   <div class="mesl" id="plh"></div>
    <div id="pll"></div>
-   <div class="emp" id="ple" hidden><div class="ci"><svg viewBox="0 0 24 24"><path d="M4 7h12M4 12h12M4 17h7"/><path d="M19 15v-6l-2 1"/></svg></div><b>Noch keine Playlists</b><span>Hier erscheinen deine Playlists.</span><span>Mit + legst du die erste an.</span></div>
+   <div class="emp" id="ple" hidden><div class="ci"><svg viewBox="0 0 24 24"><path d="M4 7h12M4 12h12M4 17h7"/><path d="M19 15v-6l-2 1"/></svg></div><b>Noch keine Playlists</b><span>Mit „+“ legst du die erste an.</span></div>
   </section>
   <section class="page" id="p-plc"><div id="plc"></div></section>
   <section class="page" id="p-alb"><div id="alb"></div></section>
@@ -853,8 +897,16 @@ body.offl #pult{top:calc(env(safe-area-inset-top) + 84px)}
 
 <div class="sheet" id="pa" role="dialog" aria-label="Songs hinzufügen">
  <div class="t"><button class="cn" id="pac">Abbrechen</button><b>Songs hinzufügen</b><button class="go" id="pag">Fertig</button></div>
- <label class="sb"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="paq" type="search" placeholder="Suchen" autocomplete="off" aria-label="Suchen"></label>
+ <label class="sb"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="paq" type="search" placeholder="Titel, Interpret, Album" autocomplete="off" aria-label="Suchen"></label>
+ <div class="pan" id="pan"></div>
  <div class="card pcl" id="pal"></div>
+</div>
+
+
+<div class="sheet" id="pd" role="dialog" aria-label="Drucken">
+ <div class="t"><button class="cn" id="pdc">Abbrechen</button><b>Drucken / PDF</b><button class="go" id="pdg">Weiter</button></div>
+ <div class="seg" id="pdseg"><button data-c="1">Mit Covers</button><button data-c="0">Ohne Covers</button></div>
+ <div class="hint" id="pdi" style="text-align:center"></div>
 </div>
 
 <div class="sheet" id="pf" role="dialog" aria-label="PDF">
@@ -863,13 +915,13 @@ body.offl #pult{top:calc(env(safe-area-inset-top) + 84px)}
 </div>
 
 <div class="sheet tall" id="cs" role="dialog" aria-label="Bild suchen" style="z-index:23">
- <div class="t"><button class="cn" id="csc">Abbrechen</button><b id="cst">Bild suchen</b><span style="min-width:74px"></span></div>
+ <div class="t"><button class="cn" id="csc">Abbrechen</button><b id="cst">Online suchen</b><button class="go" id="csg" disabled>Übernehmen</button></div>
  <label class="sb"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="csq" type="search" placeholder="Suchen" autocomplete="off" aria-label="Suchen"></label>
  <div id="csr"></div>
 </div>
 
 <div class="sheet" id="cr" role="dialog" aria-label="Anpassen" style="z-index:23">
- <div class="t"><button class="cn" id="crc">Abbrechen</button><b>Anpassen</b><button class="go" id="crg">Fertig</button></div>
+ <div class="t"><button class="cn" id="crc">Abbrechen</button><b>Anpassen</b><button class="go" id="crg">Übernehmen</button></div>
  <div class="crop" id="crw"><img id="cri" alt=""></div>
  <input type="range" class="zoom" id="crz" min="0" max="100" value="0">
  <div class="hint" style="text-align:center">Ziehen zum Verschieben, Regler zum Vergrößern.</div>
@@ -1159,7 +1211,7 @@ body.offl #pult{top:calc(env(safe-area-inset-top) + 84px)}
   if(t.closest('#hsearch')){seOpen();return}
   if(t.closest('#hplus')){notizOpen('',tabPage()==='pl'?'playlist':'');return}
   if(t.closest('#bk')){pop();return}
-  if(t.closest('#hpen')){if(OFFL){snack('Keine Verbindung · Änderungen gesperrt');return}var p=curPage();if(p==='song')sfOpen('s'+CS);else if(p==='alb')sfOpen('a'+CA);else if(p==='int')sfOpen('i'+CI);else if(p==='plc')openPe();return}
+  if(t.closest('#hpen')){if(OFFL){snack('Keine Verbindung · Änderungen gesperrt');return}var p=curPage();if(p==='song')sfOpen('s'+CS);else if(p==='alb')sfOpen('a'+CA);else if(p==='int')sfOpen('i'+CI);else if(p==='plc')sfOpen('p'+CP);return}
  });
  window.addEventListener('scroll',function(){$('hd').classList.toggle('sc',(window.scrollY||0)>6)},{passive:true});
  function pop(){
@@ -1215,11 +1267,13 @@ body.offl #pult{top:calc(env(safe-area-inset-top) + 84px)}
  var MODEN={auto:'Automatisch',light:'Hell',dark:'Dunkel'};
  function ckIc(){return CK}
  function mnuPaint(){
-  var m=$('mnu'),h='';m.classList.toggle('wide',MV==='set');
+  var m=$('mnu'),h='';m.classList.toggle('wide',MV!=='main');
   if(MV==='main'){
    h='<div class="mh"><b>DocThor</b><small>Version '+VERSION+'</small><button class="mx" id="mx" aria-label="Schließen"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>'
     +'<div class="gl">Sammlung</div><button class="it" data-m="eck">'+ICO.eck+'Eckdaten</button><button class="it dim" data-m="aufr">'+ICO.aufr+'Aufräumen<span class="sb2">bald</span></button>'
     +'<div class="gl">App</div><button class="it" data-m="set">'+ICO.set+'Einstellungen</button><div class="sp"></div><button class="it" data-m="hilfe">'+ICO.hilfe+'Hilfe</button>';
+  }else if(MV==='eck'){h=eckHtml()
+  }else if(MV==='hilfe'){h=helpHtml()
   }else{
    var bk=META.backup,bks=bk?(new Date(bk).toDateString()===new Date().toDateString()?'heute ':fmtDate(bk).slice(0,6)+' ')+('0'+new Date(bk).getHours()).slice(-2)+':'+('0'+new Date(bk).getMinutes()).slice(-2):(DEMO?'Demo':'noch keine');
    var cn=DEMO?'Demo':OFFL||FAIL?'keine Verbindung':(SYNC?'verbunden':'verbunden');
@@ -1238,14 +1292,14 @@ body.offl #pult{top:calc(env(safe-area-inset-top) + 84px)}
  $('mnu').addEventListener('click',function(e){
   if(e.target.closest('#mx')){mnuClose();return}
   var b=e.target.closest('[data-m]');if(!b)return;var m=b.getAttribute('data-m');
-  if(m==='set'){MV='set';mnuPaint();return}
+  if(m==='set'||m==='eck'||m==='hilfe'){MV=m;MS={};mnuPaint();$('mnu').scrollTop=0;return}
+  if(m==='h'){var k=b.getAttribute('data-k');MS.h=MS.h===k?null:k;mnuPaint();return}
   if(m==='main'){MV='main';mnuPaint();return}
   if(m==='x-dar'){MS.dar=!MS.dar;mnuPaint();return}
   if(m==='x-svc'){MS.svc=!MS.svc;mnuPaint();return}
   if(m==='key'){mnuClose();suOpen('',true);return}
   mnuClose();
-  if(m==='eck'||m==='hilfe')setTimeout(function(){snack('Kommt in der nächsten Fassung')},250);
-  else if(m==='aufr')setTimeout(function(){snack('Kommt später')},250);
+  if(m==='aufr')setTimeout(function(){snack('Kommt später')},250);
  });
  var mx0=null;
  $('mnu').addEventListener('touchstart',function(e){mx0=e.touches[0].clientX},{passive:true});
@@ -2318,7 +2372,7 @@ body.offl #pult{top:calc(env(safe-area-inset-top) + 84px)}
  }
  var DEMOIMG=function(c){return 'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect width="300" height="300" fill="'+c+'"/></svg>')};
  var IS={kind:'album',cb:null,seq:0,tm:0,hits:[]};
- function imgOpen(kind,q,cb){IS.kind=kind;IS.cb=cb;IS.hits=[];$('cst').textContent=kind==='artist'?'Foto suchen':'Cover suchen';$('csq').value=q||'';$('csr').innerHTML='';openN('cs');imgGo(q)}
+ function imgOpen(kind,q,cb){IS.kind=kind;IS.cb=cb;IS.hits=[];IS.sel=-1;$('csg').disabled=true;$('cst').textContent='Online suchen';$('csq').value=q||'';$('csr').innerHTML='';openN('cs');imgGo(q)}
  function imgMsg(t){$('csr').innerHTML='<div class="erm">'+esc(t)+'</div>'}
  function imgGo(q){
   var my=++IS.seq;q=String(q||'').trim();
@@ -2326,7 +2380,7 @@ body.offl #pult{top:calc(env(safe-area-inset-top) + 84px)}
   $('csr').innerHTML='<div class="ig">'+[0,1,2,3,4,5].map(function(){return '<div class="it sk"><div class="im"></div></div>'}).join('')+'</div>';
   function paint(r){
    if(my!==IS.seq)return;IS.hits=r||[];
-   if(!IS.hits.length){imgMsg('Nichts gefunden. Versuche es mit einem anderen Suchbegriff.');return}
+   if(!IS.hits.length){$('csr').innerHTML='<div class="nfd">Online nichts gefunden</div><button class="lk3" id="csre">Nochmal suchen</button>';return}
    $('csr').innerHTML='<div class="ig'+(IS.kind==='artist'?' rdi':'')+'">'+IS.hits.map(function(h,i){return '<div class="it" data-i="'+i+'"><div class="im" style="background-image:url(\''+String(h.u).replace(/'/g,'%27')+'\')"><span class="bd">'+esc(h.q)+'</span></div><div class="tt">'+esc(h.t)+'</div>'+(h.s?'<div class="ss">'+esc(h.s)+'</div>':'')+'</div>'}).join('')+'</div>';
   }
   if(DEMO||typeof google==='undefined'||!google.script){setTimeout(function(){paint(IS.kind==='artist'?[{u:DEMOIMG('#c33'),t:q,s:'',q:'Deezer'}]:[{u:DEMOIMG('#36c'),t:q,s:'Demo',q:'Apple'},{u:DEMOIMG('#3a3'),t:q,s:'Demo',q:'Deezer'}])},250);return}
@@ -2334,20 +2388,22 @@ body.offl #pult{top:calc(env(safe-area-inset-top) + 84px)}
  }
  $('csq').addEventListener('input',function(){clearTimeout(IS.tm);var v=this.value;IS.tm=setTimeout(function(){imgGo(v)},450)});
  $('csq').addEventListener('keydown',function(e){if(e.key==='Enter'){clearTimeout(IS.tm);imgGo(this.value);this.blur()}});
- $('csr').addEventListener('click',function(e){var t=e.target.closest('.it');if(!t)return;var h=IS.hits[Number(t.getAttribute('data-i'))];if(!h)return;var cb=IS.cb;closeN('cs');if(cb)cb(h.u)});
+ $('csr').addEventListener('click',function(e){if(e.target.closest('#csre')){imgGo($('csq').value);return}var t=e.target.closest('.it');if(!t||t.classList.contains('sk'))return;IS.sel=Number(t.getAttribute('data-i'));[].forEach.call($('csr').querySelectorAll('.it'),function(x){x.classList.toggle('sel',x===t)});$('csg').disabled=false});
+ $('csg').onclick=function(){var h=IS.hits[IS.sel];if(!h)return;var cb=IS.cb;closeN('cs');if(cb)cb(h.u)};
  $('csc').onclick=function(){closeN('cs')};
  function cvOnline(){
   var e=entryOf(ED.key);if(!e)return;var M=maps();
   if(e.kind==='album')imgOpen('album',(e.rec.title+' '+(M.a[e.rec.artist]?M.a[e.rec.artist].name:'')).trim(),function(u){ED.img=u;ED.msg='';render()});
   else imgOpen('artist',e.rec.name,function(u){ED.img=u;ED.msg='';render()});
  }
- function cvGot(u){ED.img=u;ED.msg='';render()}
+ function cvGot(u){ED.img=u;ED.msg='';cvFit()}
+ function pickFull(file,cb){var rd=new FileReader();rd.onload=function(){var im=new Image();im.onload=function(){var k=Math.min(1,1000/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',.85))};im.onerror=function(){snack('Das Bild konnte nicht gelesen werden.')};im.src=rd.result};rd.readAsDataURL(file)}
  function cvPaste(){
   var msg='Kein Bild in der Zwischenablage. Kopiere zuerst ein Bild (iPhone: Bild lange drücken → Kopieren; Mac: ⌘C), dann hier einfügen.';
   if(navigator.clipboard&&navigator.clipboard.read){
    navigator.clipboard.read().then(function(items){
     var done=false;
-    items.forEach(function(it){if(done)return;it.types.forEach(function(t){if(done||t.indexOf('image/')!==0)return;done=true;it.getType(t).then(function(b){pickImage(b,320,cvGot)})})});
+    items.forEach(function(it){if(done)return;it.types.forEach(function(t){if(done||t.indexOf('image/')!==0)return;done=true;it.getType(t).then(function(b){pickFull(b,cvGot)})})});
     if(!done){ED.msg=msg;render()}
    },function(){ED.msg=msg;render()});
   }else{ED.msg='Am Mac: Bild kopieren und ⌘V drücken. Auf dem iPhone: Hochladen nutzen.';render()}
@@ -2355,10 +2411,10 @@ body.offl #pult{top:calc(env(safe-area-inset-top) + 84px)}
  document.addEventListener('paste',function(e){
   if(!ED||(ED.f!=='cover'&&ED.f!=='foto'))return;
   var items=(e.clipboardData&&e.clipboardData.items)||[];
-  for(var i=0;i<items.length;i++){if(items[i].type.indexOf('image/')===0){var f=items[i].getAsFile();if(f){e.preventDefault();pickImage(f,320,cvGot);return}}}
+  for(var i=0;i<items.length;i++){if(items[i].type.indexOf('image/')===0){var f=items[i].getAsFile();if(f){e.preventDefault();pickFull(f,cvGot);return}}}
  });
  var CVF=document.createElement('input');CVF.type='file';CVF.accept='image/*';CVF.hidden=true;document.body.appendChild(CVF);
- CVF.addEventListener('change',function(){var f=CVF.files&&CVF.files[0];CVF.value='';if(f&&ED)pickImage(f,320,cvGot)});
+ CVF.addEventListener('change',function(){var f=CVF.files&&CVF.files[0];CVF.value='';if(f&&ED)pickFull(f,cvGot)});
  function cvUpload(){CVF.click()}
  /* Anpassen: fester Rahmen, Zoom und Verschieben */
  var CR={x:0,y:0,s:1,min:1,w:0,h:0,drag:null,rd:false};
@@ -2936,12 +2992,7 @@ body.offl #pult{top:calc(env(safe-area-inset-top) + 84px)}
  }
  function plInfo(pid){var a=plSongs(pid),t=0;a.forEach(function(x){t+=x.s.dur||0});return{n:a.length,t:t,list:a}}
  function plCover(p){return img(p.cover)}
- function renderPl(){
-  var pl=D.playlists.slice().sort(function(a,b){return(b.date||0)-(a.date||0)});
-  $('ple').hidden=!!pl.length;$('pls').hidden=!pl.length;
-  $('pll').innerHTML=pl.length?'<div class="card">'+pl.map(function(p){var i=plInfo(p.id),cu=plCover(p);
-   return '<div class="lr tp" data-k="'+p.id+'" style="cursor:pointer"><div class="lc'+(cu?' cv':'')+'"'+covStyle(cu)+' style="width:60px;height:60px;border-radius:10px">'+(cu?'':ICON_LIST)+'</div><div class="m"><b>'+esc(p.name)+'</b><div class="s">'+fmtDate(p.date)+' · '+i.n+' Titel</div></div>'+ICON_CHV+'</div>'}).join('')+'</div>':'';
- }
+
  $('pll').addEventListener('click',function(e){var r=e.target.closest('.lr');if(r)openPc(r.getAttribute('data-k'))});
  var SORTL=[['own','Eigene Reihenfolge'],['title','Titel A–Z'],['artist','Interpret A–Z'],['album','Album']];
  function sortLabel(r){return (SORTL.filter(function(x){return x[0]===r})[0]||SORTL[0])[1]}
@@ -2949,20 +3000,6 @@ body.offl #pult{top:calc(env(safe-area-inset-top) + 84px)}
   var sr=SRT[p.id];if(!sr||sr.rule==='own')return 0;
   var seen={};(sr.ids||[]).forEach(function(i){seen[i]=1});
   return plSongs(p.id).filter(function(x){return !seen[x.s.id]}).length;
- }
- function renderPc(){
-  var p=plById(CP);if(!p){if(!pop())showPage('pl');return}
-  var i=plInfo(p.id),cu=plCover(p),M=maps(),rule=(SRT[p.id]||{}).rule||'own',ns=newSince(p);
-  var h='<div class="cov'+(cu?' cv':'')+'"'+covStyle(cu)+'>'+(cu?'':ICON_LIST)+'</div><div class="sg"><h2>'+esc(p.name)+'</h2><div class="meta">'+i.n+' Titel'+(i.n?' · '+fmtTotal(i.t):'')+' · Erstellt am '+fmtDate(p.date)+'</div></div>';
-  h+='<div class="pbt"><button class="b pr" data-act="pcs">+ Songs hinzufügen</button><button class="b g2" data-act="pcp">PDF / Drucken</button></div>';
-  if(!i.n)h+='<div class="emp" style="margin-top:6vh"><div class="ci">'+ICON_NOTE+'</div><b>Noch keine Songs</b><span>Mit „Songs hinzufügen“ füllst du die Playlist.</span></div>';
-  else{
-   h+='<div class="srt"><span></span><button data-act="pcsort">Sortierung: '+sortLabel(rule)+' ⌄</button></div>';
-   if(ns)h+='<div class="warnb"><span><b>'+plural(ns,'Song','Songs')+'</b> seit dem Sortieren dazugekommen</span><button data-act="pcresort">Neu sortieren</button></div>';
-   h+='<div class="card">'+i.list.map(function(x){var s=x.s,cu2=coverOfSong(M,s);
-    return '<div class="lr tp" data-k="'+s.id+'" style="cursor:pointer"><div class="lc'+(cu2?' cv':'')+'"'+covStyle(cu2)+'>'+(cu2?'':ICON_NOTE)+'</div><div class="m"><b>'+titleFeat(s)+'</b><div class="s">'+esc(M.a[s.artist]?M.a[s.artist].name:'Interpret fehlt')+'</div></div><span class="dur">'+(s.dur?fmtDur(s.dur):'')+'</span></div>'}).join('')+'</div>';
-  }
-  $('plc').innerHTML=h;
  }
  function applySort(pid,rule,quiet){
   var M=maps(),list=plSongs(pid),before={};list.forEach(function(x){before[x.l.id]=x.l.pos});
@@ -2996,14 +3033,29 @@ body.offl #pult{top:calc(env(safe-area-inset-top) + 84px)}
   else if(a==='pcresort'){var r2=(SRT[CP]||{}).rule;if(r2&&r2!=='own'){applySort(CP,r2);renderPc()}}
   e.stopPropagation();
  },true);
+
+ var PDC=1;
  function printCheck(){
-  var p=plById(CP);if(!p)return;var ns=newSince(p),r=(SRT[p.id]||{}).rule;
-  if(ns&&r&&r!=='own')return confirm2(plural(ns,'Song','Songs')+' kam seit dem Sortieren dazu.','Neu sortieren und drucken',function(){applySort(CP,r,true);renderPc();printPl()},{labelB:'So drucken',fnB:printPl});
-  printPl();
+  var p=plById(CP);if(!p)return;var i=plInfo(p.id);
+  if(!i.n){snack('Die Playlist ist noch leer.');return}
+  PDC=i.n>150?0:1;paintPd();open('pd');
  }
+ function paintPd(){
+  var i=plInfo(CP);[].forEach.call($('pdseg').children,function(b){b.classList.toggle('on',Number(b.getAttribute('data-c'))===PDC)});
+  $('pdi').textContent=plural(i.n,'Song','Songs')+' · Reihenfolge wie in der Playlist';
+ }
+ $('pdseg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;PDC=Number(b.getAttribute('data-c'));paintPd()});
+ $('pdc').onclick=close;
+ $('pdg').onclick=function(){
+  var p=plById(CP);if(!p)return;var ns=newSince(p),r=(SRT[p.id]||{}).rule;close();
+  setTimeout(function(){
+   if(ns&&r&&r!=='own')return confirm2(plural(ns,'Song','Songs')+' kam seit dem Sortieren dazu.','Neu sortieren und drucken',function(){applySort(CP,r,true);renderPc();printPl()},{labelB:'So drucken',fnB:printPl});
+   printPl();
+  },280);
+ };
  function pdfServer(p,i,M){
   $('pft').textContent='PDF wird erstellt …';$('pfb').style.display='none';$('pfd').textContent='Das dauert einen Moment.';open('pf');
-  var d={name:p.name,meta:'Erstellt am '+fmtDate(p.date)+' · '+i.n+' Titel · '+fmtTotal(i.t),cover:p.cover||'',rows:i.list.map(function(x,k){var s=x.s,al=M.al[s.album],ar=M.a[s.artist];return{n:k+1,t:s.title,f:featNames(s).join(', '),a:ar?ar.name:'',al:al?al.title:'',d:s.dur?fmtDur(s.dur):'',c:al?(al.cover||''):''}})};
+  var d={name:p.name,meta:'Erstellt am '+fmtDate(p.date)+' · '+i.n+' Titel · '+fmtTotal(i.t),cover:p.cover||'',nocover:PDC?0:1,rows:i.list.map(function(x,k){var s=x.s,al=M.al[s.album],ar=M.a[s.artist];return{n:k+1,t:s.title,f:featNames(s).join(', '),a:ar?ar.name:'',al:al?al.title:'',d:s.dur?fmtDur(s.dur):'',c:PDC&&al?(al.cover||''):''}})};
   google.script.run.withSuccessHandler(function(r){
    if(!r||!r.url){$('pft').textContent='Das hat nicht geklappt';$('pfd').textContent='Versuche es später noch einmal.';return}
    $('pft').textContent='PDF ist fertig';$('pfd').textContent='Gespeichert in Drive im Ordner „DocThor PDFs“. Dort kannst du es teilen oder drucken.';$('pfb').href=r.url;$('pfb').style.display='block';
@@ -3016,10 +3068,10 @@ body.offl #pult{top:calc(env(safe-area-inset-top) + 84px)}
   if(!DEMO&&typeof google!=='undefined'&&google.script&&google.script.run&&!/[?&]print=1/.test(location.search))return pdfServer(p,i,M);
   var cu=plCover(p);
   var h='<div class="ph"><div class="pc"'+(cu?' style="background-image:url(\''+cu.replace(/'/g,'%27')+'\')"':'')+'></div><div><h1>'+esc(p.name)+'</h1><div class="pm">Erstellt am '+fmtDate(p.date)+'<br>'+i.n+' Titel · '+fmtTotal(i.t)+'</div></div></div>';
-  h+='<table><thead><tr><th></th><th></th><th>Titel</th><th>Interpret</th><th>Album</th><th class="d">Dauer</th></tr></thead><tbody>';
+  h+='<table'+(PDC?'':' class="nc"')+'><thead><tr>'+(PDC?'<th></th>':'')+'<th></th><th>Titel</th><th>Interpret</th><th>Album</th><th class="d">Dauer</th></tr></thead><tbody>';
   i.list.forEach(function(x,k){var s=x.s,fn=featNames(s),c=coverOfSong(M,s),ar=M.a[s.artist],al=M.al[s.album];
-   h+='<tr><td class="i"><i'+(c?' style="background-image:url(\''+c.replace(/'/g,'%27')+'\')"':'')+'></i></td><td class="n">'+(k+1)+'</td><td class="t">'+esc(s.title)+(fn.length?' <span class="f">feat. '+esc(fn.join(', '))+'</span>':'')+'</td><td>'+esc(ar?ar.name:'')+'</td><td>'+esc(al?al.title:'')+'</td><td class="d">'+(s.dur?fmtDur(s.dur):'')+'</td></tr>'});
-  h+='</tbody></table><div class="ft">DocThor</div>';
+   h+='<tr>'+(PDC?'<td class="i"><i'+(c?' style="background-image:url(\''+c.replace(/'/g,'%27')+'\')"':'')+'></i></td>':'')+'<td class="n">'+(k+1)+'</td><td class="t">'+esc(s.title)+(fn.length?' <span class="f">feat. '+esc(fn.join(', '))+'</span>':'')+'</td><td>'+esc(ar?ar.name:'')+'</td><td>'+esc(al?al.title:'')+'</td><td class="d">'+(s.dur?fmtDur(s.dur):'')+'</td></tr>'});
+  h+='</tbody></table><div class="ft">DocThor · gedruckt am '+fmtDate(Date.now())+'</div>';
   $('prn').innerHTML=h;
   setTimeout(function(){try{window.print()}catch(e){snack('Drucken ist hier nicht möglich.')}},150);
  }
@@ -3033,23 +3085,7 @@ body.offl #pult{top:calc(env(safe-area-inset-top) + 84px)}
  }
  $('png').onclick=pnDo;$('pnc').onclick=function(){var f=PN_FROM_PK;PN_FROM_PK=false;close();if(f)setTimeout(function(){paintPk();open('pk')},280)};
  $('pnq').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();pnDo()}});
- /* Songs hinzufügen */
- function openPa(){PA={sel:[],has:{}};plSongs(CP).forEach(function(x){PA.has[x.s.id]=1});$('paq').value='';paintPa();open('pa')}
- function paintPa(){
-  var M=maps(),q=$('paq').value.trim().toLowerCase().split(/\s+/).filter(Boolean);
-  var a=D.songs.filter(function(s){if(s.state==='neu')return false;var t=(s.title+' '+(M.a[s.artist]?M.a[s.artist].name:'')+' '+(M.al[s.album]?M.al[s.album].title:'')).toLowerCase();return q.every(function(w){return t.indexOf(w)>=0})}).sort(function(x,y){return cmpTxt(x.title,y.title)}).slice(0,300);
-  $('pal').innerHTML=a.length?a.map(function(s){var cu=coverOfSong(M,s),on=PA.sel.indexOf(s.id)>=0,fx=PA.has[s.id];
-   return '<div class="lr'+(fx?' fix':on?' sel':'')+'" data-k="'+s.id+'"><div class="lc'+(cu?' cv':'')+'"'+covStyle(cu)+'>'+(cu?'':ICON_NOTE)+'</div><div class="m"><b>'+esc(s.title)+'</b><div class="s">'+esc(M.a[s.artist]?M.a[s.artist].name:'Interpret fehlt')+'</div></div><div class="ck">'+CK+'</div></div>'}).join(''):'<div style="padding:18px 0;text-align:center;color:var(--s)">Keine Treffer</div>';
-  $('pag').textContent=PA.sel.length?'Fertig ('+PA.sel.length+')':'Fertig';
- }
- $('paq').addEventListener('input',paintPa);
- $('pal').addEventListener('click',function(e){var r=e.target.closest('.lr');if(!r)return;var id=r.getAttribute('data-k');if(PA.has[id])return;var i=PA.sel.indexOf(id);if(i>=0)PA.sel.splice(i,1);else PA.sel.push(id);paintPa()});
- $('pag').onclick=function(){
-  var pos=0;D.links.forEach(function(l){if(l.playlist===CP&&(l.pos||0)>pos)pos=l.pos});
-  var n=PA.sel.length;PA.sel.forEach(function(id){put('links',{id:nid('K'),playlist:CP,song:id,pos:++pos})});
-  close();renderPc();if(n)snack(plural(n,'Song hinzugefügt','Songs hinzugefügt'));
- };
- $('pac').onclick=close;
+
  /* Playlist bearbeiten */
  function openPe(){
   var p=plById(CP);if(!p)return;
@@ -3104,5 +3140,179 @@ body.offl #pult{top:calc(env(safe-area-inset-top) + 84px)}
  window.addEventListener('offline',function(){setOffline(true)});
  window.addEventListener('online',function(){flush();pull()});
  boot();setTimeout(shareCheck,400);
+
+ /* ---------- V32 Teil 4: Playlists-Seite und Playlistkarte ---------- */
+ var PLS={s:'new'},PM={rm:false,q:null,k:null};
+ function fmtStd(sec){var m=Math.round(sec/60);if(m<60)return m+' Min.';return Math.floor(m/60)+':'+('0'+(m%60)).slice(-2)+' Std.'}
+ function plDate(t){if(!t)return '';var d=new Date(t);return ('0'+(d.getMonth()+1)).slice(-2)+'.'+d.getFullYear()}
+ function plRows(){return D.playlists.filter(function(p){return !noteOpen(p)})}
+ function renderPl(){
+  var pl=plRows().sort(function(a,b){return PLS.s==='new'?(b.date||0)-(a.date||0):(a.date||0)-(b.date||0)});
+  $('ple').hidden=!!pl.length;$('plh').hidden=!pl.length;$('pll').innerHTML='';
+  if(!pl.length)return;
+  $('plh').innerHTML='<span class="fc">'+plural(pl.length,'Playlist','Playlists')+'</span><button id="plso" class="so">Erstellt · '+(PLS.s==='new'?'neueste':'älteste')+' zuerst ⇅</button>';
+  $('pll').innerHTML='<div class="card">'+pl.map(function(p){
+   var i=plInfo(p.id),cu=plCover(p),dr=plMiss(p).length;
+   return '<div class="lr tp" data-k="'+p.id+'" style="cursor:pointer"><div class="lc pc'+(cu?' cv':'')+'"'+covStyle(cu)+'>'+(cu?'':ICON_LIST)+'</div><div class="m"><b>'+esc(p.name)+'</b><div class="s">'+plural(i.n,'Song','Songs')+(i.n?' · '+fmtStd(i.t):'')+'</div></div>'+(dr?dotWord('entwurf'):'<span class="dur">'+plDate(p.date)+'</span>')+'</div>'}).join('')+'</div>';
+ }
+ $('plh').addEventListener('click',function(e){if(e.target.closest('#plso')){PLS.s=PLS.s==='new'?'old':'new';renderPl()}});
+ function renderPc(){
+  var p=plById(CP);if(!p||noteOpen(p)){if(!pop())showPage('pl');return}
+  if(PM.k!==CP){PM={rm:false,q:null,k:CP}}
+  var i=plInfo(p.id),cu=plCover(p),M=maps(),rule=(SRT[p.id]||{}).rule||'own',ns=newSince(p),h='';
+  var rows=mqh(esc(p.name),'kt1')+'<div class="k3">'+plural(i.n,'Song','Songs')+(i.n?' · '+fmtStd(i.t):'')+'</div><div class="k3">Erstellt '+fmtDate(p.date)+'</div>';
+  h+=kopf(cu,0,ICON_LIST,rows).replace('class="kc','class="kc sq');
+  if(plMiss(p).length)h+=standZeile('playlist',p,'entwurf','p'+p.id);
+  h+='<div class="pbt"><button class="b pr" data-act="pcs">＋ Songs hinzufügen</button><button class="b g2" data-act="pcp">Drucken / PDF</button></div>';
+  if(!i.n)h+='<div class="hint" style="margin:14px 4px">Noch keine Songs</div>';
+  else{
+   h+='<div class="h hrow"><span>Songs</span><span class="pcr"><button data-act="pcrm">'+(PM.rm?'Fertig':'Entfernen')+'</button><button data-act="pcsort">'+sortLabel(rule)+' ⌄</button></span></div>';
+   if(ns)h+='<div class="warnb"><span><b>'+plural(ns,'Song','Songs')+'</b> seit dem Sortieren dazugekommen</span><button data-act="pcresort">Neu sortieren</button></div>';
+   h+='<div class="card">'+i.list.map(function(x,k){var s=x.s,ask=PM.q===x.l.id;
+    return '<div class="pcz"><div class="lr tp" data-k="'+s.id+'" style="cursor:pointer">'+(PM.rm?'<button class="mi" data-act="pcq" data-l="'+x.l.id+'" aria-label="Entfernen"><svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg></button>':'')+'<div class="nr">'+(k+1)+'</div><div class="m"><b>'+titleFeat(s)+'</b><div class="s">'+esc((M.a[s.artist]?M.a[s.artist].name:'Interpret fehlt')+(M.al[s.album]?' · '+M.al[s.album].title:''))+'</div></div><span class="dur">'+(s.dur?fmtDur(s.dur):'')+'</span></div>'
+     +(ask?'<div class="rq"><p>„'+esc(s.title)+'“ aus dieser Playlist entfernen? Der Song bleibt in deiner Sammlung.</p><div><button class="y" data-act="pcy" data-l="'+x.l.id+'">Ja, entfernen</button><button class="n" data-act="pcn">Abbrechen</button></div></div>':'')+'</div>'}).join('')+'</div>';
+  }
+  $('plc').innerHTML=h;pxMarquee&&pxMarquee();
+ }
+ document.addEventListener('click',function(e){
+  var el=e.target.closest('[data-act]');if(!el||!$('plc').contains(el))return;var a=el.getAttribute('data-act');
+  if(a==='pcrm'){PM.rm=!PM.rm;PM.q=null;renderPc()}
+  else if(a==='pcq'){PM.q=el.getAttribute('data-l');renderPc()}
+  else if(a==='pcn'){PM.q=null;renderPc()}
+  else if(a==='pcy'){
+   var id=el.getAttribute('data-l'),l=null;D.links.forEach(function(x){if(x.id===id)l=cp(x)});if(!l)return;
+   del('links',id);PM.q=null;renderPc();snack('Aus der Playlist entfernt','Rückgängig',function(){put('links',l);renderPc()});
+  }else return;
+  e.stopPropagation();
+ },true);
+ /* Songs hinzufügen: Haken setzen und entfernen, gilt erst mit „Fertig“ */
+ function openPa(){
+  if(OFFL){snack('Keine Verbindung · Änderungen gesperrt');return}
+  PA={cur:{},now:{}};plSongs(CP).forEach(function(x){PA.cur[x.s.id]=1;PA.now[x.s.id]=1});$('paq').value='';paintPa();open('pa');
+ }
+ function paintPa(){
+  var M=maps(),q=nrm($('paq').value.trim()).split(/\s+/).filter(Boolean);
+  var a=D.songs.filter(function(s){if(s.state!=='fertig'&&songStatus(s)!=='fertig')return false;var t=nrm(s.title+' '+(M.a[s.artist]?M.a[s.artist].name:'')+' '+(M.al[s.album]?M.al[s.album].title:''));return q.every(function(w){return t.indexOf(w)>=0})}).sort(function(x,y){return cmpTxt(x.title,y.title)}).slice(0,300);
+  var inn=Object.keys(PA.now).length;
+  $('pan').textContent=(q.length?plural(a.length,'Treffer','Treffer')+' · ':'')+inn+' in der Playlist';
+  $('pal').innerHTML=a.length?a.map(function(s){var cu=coverOfSong(M,s),on=!!PA.now[s.id];
+   return '<div class="lr'+(on?' sel':'')+'" data-k="'+s.id+'"><div class="lc'+(cu?' cv':'')+'"'+covStyle(cu)+'>'+(cu?'':ICON_NOTE)+'</div><div class="m"><b>'+esc(s.title)+'</b><div class="s">'+esc(M.a[s.artist]?M.a[s.artist].name:'Interpret fehlt')+'</div></div><div class="ck">'+CK+'</div></div>'}).join(''):'<div style="padding:18px 0;text-align:center;color:var(--s)">Keine Treffer</div>';
+ }
+ $('paq').addEventListener('input',paintPa);
+ $('pal').addEventListener('click',function(e){var r=e.target.closest('.lr');if(!r)return;var id=r.getAttribute('data-k');if(PA.now[id])delete PA.now[id];else PA.now[id]=1;paintPa()});
+ $('pag').onclick=function(){
+  var pos=0;D.links.forEach(function(l){if(l.playlist===CP&&(l.pos||0)>pos)pos=l.pos});
+  var add=Object.keys(PA.now).filter(function(i){return !PA.cur[i]}),rm=Object.keys(PA.cur).filter(function(i){return !PA.now[i]});
+  add.forEach(function(id){put('links',{id:nid('K'),playlist:CP,song:id,pos:++pos})});
+  D.links.filter(function(l){return l.playlist===CP&&rm.indexOf(l.song)>=0}).forEach(function(l){del('links',l.id)});
+  close();renderPc();if(add.length||rm.length)snack('Playlist gespeichert');
+ };
+ $('pac').onclick=close;
+
+ /* ---------- Eckdaten und Hilfe (im Menü-Streifen) ---------- */
+ var HELP=[
+  ['Erste Schritte',[
+   ['Was ist DocThor?','DocThor ist dein Notizbuch für Musik. Du hältst fest, was du hörst oder hören willst, und DocThor führt dich Schritt für Schritt, bis aus der Notiz ein vollständiger Song in deiner Sammlung geworden ist. Alles liegt in deinem eigenen Google Sheet.'],
+   ['So läuft ein Song','1. **Notiz:** Du schreibst nur auf, was dir einfällt, zum Beispiel „Hotel California“.\n2. **Entwurf:** Du bestätigst Interpret, Album, Titelnummer, Dauer, Feat. und Bemerkung. Vieles findet DocThor online für dich.\n3. **Checkliste:** Du suchst den Song in deinem Streaming-Dienst und legst ihn in Playlists.\n4. **Abgeschlossen:** Der Song liegt fertig in der Mediathek.\nFindest du den Song im Streaming-Dienst nicht, geht er auf die Merkliste und kommt später wieder.'],
+   ['Das Mischpult und das Pult','Das Mischpult ist deine Arbeitsseite. Oben liegt das **Pult**, die dunkelgrüne Karte: Dort arbeitest du immer an einem Eintrag. Darunter steht die **Warteschlange**, die ältesten Einträge zuerst. Tippst du auf eine Zeile, kommt sie ins Pult. Ein langer Druck öffnet ihre Karte.']
+  ]],
+  ['Songs, Alben, Interpreten, Playlists',[
+   ['Notiz, Entwurf, abgeschlossen','Eine **Notiz** ist nur ein Name. Ein **Entwurf** hat schon eine Art (Song, Album, Interpret oder Playlist), aber noch nicht alle Angaben. **Abgeschlossen** heißt: Alles ist bestätigt, der Eintrag hat keinen Punkt mehr. Die Farbe des Punkts zeigt, wo ein Eintrag steht: grau Notiz, orange Entwurf, gelb Checkliste, blau Merkliste.'],
+   ['Die Checkliste','Die Checkliste hat zwei Schritte. Zuerst **Song suchen**: Das öffnet deinen Streaming-Dienst. Findest du den Song, tippst du „Gefunden“, sonst „Nicht gefunden“. Dann wählst du **Playlists** für den Song oder „Ohne Playlist“.'],
+   ['Merkliste und „Gefunden“','Hast du einen Song im Streaming-Dienst nicht gefunden, geht er auf die Merkliste. Nach 28 Tagen kommt er wieder ans Pult. Dann suchst du noch einmal: „Gefunden“ bringt dich zurück zur Checkliste, „Noch nicht“ startet weitere 28 Tage. Bis dahin steht er unter „Zurückgestellt“.'],
+   ['Später und Nächster Beitrag','**Später** legt einen Eintrag für 7 Tage zur Seite. **Nächster Beitrag** stellt ihn ans Ende der Warteschlange, ganz ohne Pause: Du machst zuerst mit den anderen weiter.'],
+   ['Album heißt jede Veröffentlichung','In DocThor ist „Album“ der Sammelname für alles, was jemand veröffentlicht. Beim Anlegen wählst du den Typ: **Album, EP, Single, Live oder Sonstige**. Sampler, Soundtracks und Compilations gehören zu „Sonstige“. Eine einzelne Single trägst du als Album mit dem Songtitel ein.'],
+   ['Unvollständige Alben und „So lassen“','Sind nicht alle Titel eines Albums als Songs angelegt, steht in der Liste die Pille **Unvollständig**. Auf der Albumkarte zeigt ein Feld, wie viele fehlen („3 von 14 Titeln angelegt“). Mit **Titel ergänzen** legst du die übrigen an. Mit **So lassen** sagst du: Das ist Absicht, mir reichen diese Titel. Dann verschwinden Pille und Feld.'],
+   ['Marken an den Feldern','Kleine Marken sagen dir, woher ein Wert kommt. **AUS NOTIZ**: aus deinem Text. **AUS TREFFER**: online gefunden. **IN DEINER SAMMLUNG**: gibt es schon. **NEU**: wird beim Weiter neu angelegt. Ein vorausgefüllter Wert gilt erst als bestätigt, wenn du „Weiter“ tippst. Änderst du ihn, verschwindet die Marke.'],
+   ['Stift, Bearbeiten und Löschen','Der **Stift** oben rechts öffnet ein Fenster, in dem du alles ändern kannst. Ganz unten steht in Rot „… löschen“; vorher fragt DocThor nach und nennt die Folgen. Ein Interpret lässt sich nur löschen, wenn nichts mehr an ihm hängt. Sonst bietet DocThor **Vereinen** an, zum Beispiel bei Dubletten wie „ZZTop“ und „ZZ Top“. Nach dem Löschen oder Vereinen kannst du es mit **Rückgängig** zurückholen, solange die Meldung unten steht.']
+  ]],
+  ['Sammlung',[
+   ['Mediathek durchsuchen','Oben wählst du Songs, Alben oder Interpreten. Der **Filter** (zum Beispiel „Entwurf“ oder „Unvollständig“) und die **Sortierung** stehen darunter. Rechts am Rand findest du die **Buchstabenleiste**: Tippen oder Ziehen springt zu einem Buchstaben. Ein Tipp auf eine Zeile öffnet die Karte. Die Sortierung springt bei jedem Start zurück auf den Standard.'],
+   ['Die Suche','Die Lupe oben rechts sucht in deiner ganzen Sammlung: Songs, Alben, Interpreten und Playlists. Du siehst pro Gruppe bis zu drei Treffer; „Alle …“ zeigt den Rest. Ohne Text zeigt die Suche, wonach du zuletzt gesucht hast. „Abbrechen“ bringt dich dorthin zurück, wo du warst.'],
+   ['Playlists, Cover und PDF','Die Playlists-Seite ordnet nach Erstelldatum, neueste zuerst. In einer Playlist fügst du mit **Songs hinzufügen** Songs hinzu (es gibt nur abgeschlossene), mit **Entfernen** nimmst du welche heraus. Die Songs lassen sich nach Titel, Interpret oder Album sortieren. **Drucken / PDF** erzeugt eine Liste mit oder ohne Covers.'],
+   ['Cover und Foto: die vier Wege','Ein Cover (Album, Playlist) oder Foto (Interpret) setzt du auf vier Wegen: **Online suchen**, **Bild einfügen** (aus der Zwischenablage), **Hochladen** oder **Anpassen** (Ausschnitt verschieben und zoomen). Bei Playlists gibt es kein „Online suchen“.'],
+   ['Eckdaten verstehen','Im Menü findest du die Eckdaten: Zahlen zu deiner Sammlung, dem Fortschritt, der Spielzeit und deiner Aktivität. Sie sind nur zum Anschauen, du kannst dort nichts ändern.']
+  ]],
+  ['Tipps',[
+   ['Kleine Abkürzungen','Tipp auf **DocThor** bringt dich zum Mischpult. Tipp auf die **Überschrift** scrollt nach oben. Am Mischpult holt ein Tipp auf eine Zeile den Eintrag ins Pult, ein langer Druck öffnet seine Karte. In der Mediathek hat ein langer Druck keine Funktion. In einer Notiz speichert Cmd/Strg + Enter.'],
+   ['Zurückgestellt: warum steht das dort?','Unter „Zurückgestellt“ stehen Einträge, die gerade nicht dran sind: Merkliste-Songs bis zu ihrem Termin und alles, was du mit „Später“ zur Seite gelegt hast. Die Zeile ist grau und hat eine Uhr mit dem Datum. Ein Tipp holt den Eintrag trotzdem sofort ins Pult.'],
+   ['Lange Titel und Lauftext','Passt ein Titel nicht in die Zeile, läuft er langsam nach links und bleibt am Ende kurz stehen. Hast du auf dem iPhone „Bewegung reduzieren“ an, steht stattdessen eine Abkürzung mit „…“.'],
+   ['Darstellung und Meldungen','Unter Menü › Einstellungen wählst du **Automatisch** (folgt deinem iPhone), **Hell** oder **Dunkel**. Meldungen erscheinen unten als dunkle Pille: Mit „Rückgängig“ holst du die letzte Änderung zurück (ca. 6 Sekunden), eine rote Meldung heißt, dass etwas nicht geklappt hat. Dann tippst du „Nochmal versuchen“.'],
+   ['Auf dem Homescreen nutzen','Öffne DocThor in Safari, tippe auf das Teilen-Symbol und wähle „Zum Home-Bildschirm“. Danach startet DocThor wie eine normale App.'],
+   ['Wenn etwas nicht klappt','Steht oben „Keine Verbindung“, kannst du lesen, aber nichts ändern, bis die Verbindung wieder da ist. Laden die Daten beim Start nicht, tippst du „Nochmal versuchen“. Hilft das nicht, öffnet „Verbindung prüfen“ die Einstellungen; dort kannst du Adresse und Schlüssel ändern.']
+  ]]
+ ];
+ function helpTxt(t){return esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>')}
+ function helpHtml(){
+  var h='<div class="sub"><button class="back" data-m="main">'+ICON_BACK+'Menü</button><h2>Hilfe</h2></div><div style="border-top:1px solid var(--ln)"></div>';
+  HELP.forEach(function(g,gi){
+   h+='<div class="gl">'+esc(g[0])+'</div>';
+   g[1].forEach(function(t,ti){
+    var k=gi+'.'+ti,on=MS.h===k;
+    h+='<button class="it hq'+(on?' on':'')+'" data-m="h" data-k="'+k+'"><span>'+esc(t[0])+'</span><svg class="chv" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>'+(on?'<div class="ht">'+helpTxt(t[1])+'</div>':'');
+   });
+  });
+  return h+'<div style="height:24px"></div>';
+ }
+ /* Eckdaten: alles aus vorhandenen Daten berechnet, nur Anzeige */
+ function eckStats(){
+  var S=D.songs,n=albumCount(),r={};
+  var st=S.map(songStatus);
+  r.songs=st.filter(function(x){return x!=='neu'}).length;
+  r.alben=D.albums.filter(function(a){return !noteOpen(a)}).length;
+  r.int=D.artists.filter(function(a){return !noteOpen(a)}).length;
+  r.pl=D.playlists.filter(function(p){return !noteOpen(p)}).length;
+  r.all=S.length;r.fertig=st.filter(function(x){return x==='fertig'}).length;
+  r.pct=r.all?Math.round(100*r.fertig/r.all):0;
+  r.neu=st.filter(function(x){return x==='neu'}).length;
+  r.entw=st.filter(function(x){return x==='entwurf'||x==='checkliste'}).length;
+  var ml=S.filter(function(s,i){return st[i]==='merkliste'});r.ml=ml.length;r.mlDue=ml.filter(due).length;
+  var inPl={};D.links.forEach(function(l){inPl[l.song]=(inPl[l.song]||0)+1});
+  r.nopl=S.filter(function(s,i){return st[i]==='fertig'&&!inPl[s.id]}).length;
+  var ds=S.filter(function(s,i){return st[i]!=='neu'&&s.dur>0});
+  r.sec=ds.reduce(function(a,s){return a+s.dur},0);r.avg=ds.length?r.sec/ds.length:0;
+  r.long=ds.slice().sort(function(a,b){return b.dur-a.dur})[0];r.short=ds.slice().sort(function(a,b){return a.dur-b.dur})[0];
+  var now=new Date(),mk=function(d){return d.getFullYear()*12+d.getMonth()};
+  var mo=[];for(var i=5;i>=0;i--){var d=new Date(now.getFullYear(),now.getMonth()-i,1);mo.push({k:mk(d),l:['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'][d.getMonth()],n:0})}
+  var byM={},first=0;S.forEach(function(s){if(!s.created)return;var k=mk(new Date(s.created));byM[k]=(byM[k]||0)+1;if(!first||s.created<first)first=s.created});
+  mo.forEach(function(m){m.n=byM[m.k]||0});r.mo=mo;
+  r.week=S.filter(function(s){return s.created&&Date.now()-s.created<7*864e5}).length;
+  r.month=byM[mk(now)]||0;
+  var weeks=first?Math.max(1,(Date.now()-first)/(7*864e5)):1;r.perWeek=S.length/weeks;
+  var best=null;Object.keys(byM).forEach(function(k){if(!best||byM[k]>byM[best])best=k});
+  if(best){var by=Math.floor(best/12),bm=best%12;r.best=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'][bm]+' '+by+' · '+byM[best]}
+  var ac={};S.forEach(function(s,i){if(st[i]!=='neu'&&s.artist)ac[s.artist]=(ac[s.artist]||0)+1});
+  r.top=Object.keys(ac).map(function(id){var a=D.artists.filter(function(x){return x.id===id})[0];return {n:a?a.name:'',c:ac[id]}}).filter(function(x){return x.n}).sort(function(a,b){return b.c-a.c}).slice(0,5);
+  var dc={},ys=D.albums.filter(function(a){return a.year>0});
+  ys.forEach(function(a){var d=Math.floor(a.year/10)*10;dc[d]=(dc[d]||0)+1});
+  var bd=null;Object.keys(dc).forEach(function(d){if(!bd||dc[d]>dc[bd])bd=d});r.dec=bd?bd+'er':'';
+  var sy=ys.slice().sort(function(a,b){return a.year-b.year});r.oldest=sy[0];r.newest=sy[sy.length-1];
+  r.feat=S.filter(function(s,i){return st[i]!=='neu'&&s.feat}).length;
+  var pc=D.playlists.filter(function(p){return !noteOpen(p)}).map(function(p){return {n:p.name,c:D.links.filter(function(l){return l.playlist===p.id}).length}}).sort(function(a,b){return b.c-a.c});
+  r.bigPl=pc[0];r.avgPl=pc.length?pc.reduce(function(a,p){return a+p.c},0)/pc.length:0;
+  return r;
+ }
+ function nf(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'.')}
+ function eckHtml(){
+  var r=eckStats(),h='<div class="sub"><button class="back" data-m="main">'+ICON_BACK+'Menü</button><h2>Eckdaten</h2></div><div style="border-top:1px solid var(--ln)"></div>';
+  function kv(a,b){return '<div class="kvw">'+a+'<span>'+b+'</span></div>'}
+  function std(sec){var m=Math.round(sec/60);return nf(Math.floor(m/60))+' Std. '+('0'+(m%60)).slice(-2)+' Min.'}
+  function sg(s){return s?esc(s.title.replace(/ – .*$/,''))+' · '+fmtDur(s.dur):'–'}
+  function ab(a){return a?esc(a.title)+' · '+a.year:'–'}
+  function dec1(x){return (Math.round(x*10)/10).toString().replace('.',',')}
+  h+='<div class="gl">Sammlung</div>'+kv('Songs',nf(r.songs))+kv('Alben',nf(r.alben))+kv('Interpreten',nf(r.int))+kv('Playlists',nf(r.pl));
+  h+='<div class="gl">Fortschritt</div>'+kv('Abgeschlossen',r.pct+' %')+'<div class="ebar"><i style="width:'+r.pct+'%"></i></div>'
+   +kv('Notizen',nf(r.neu))+kv('Entwürfe',nf(r.entw))+kv('Merkliste',nf(r.ml)+(r.mlDue?' · '+r.mlDue+' fällig':''))+kv('Songs ohne Playlist',nf(r.nopl));
+  h+='<div class="gl">Zeit</div>'+kv('Gesamtspielzeit',r.sec?std(r.sec):'–')+kv('Ø Songlänge',r.avg?fmtDur(r.avg):'–')+kv('Längster Song',sg(r.long))+kv('Kürzester Song',sg(r.short));
+  var mx=Math.max.apply(null,r.mo.map(function(m){return m.n}).concat([1]));
+  h+='<div class="gl">Aktivität</div><div class="emo"><b>Songs pro Monat</b><div class="bars">'+r.mo.map(function(m,i){return '<div class="bc"><small>'+m.n+'</small><i class="'+(i===5?'cur':'')+'" style="height:'+Math.round(m.n/mx*100)+'%"></i><em>'+m.l+'</em></div>'}).join('')+'</div></div>'
+   +kv('Diese Woche',nf(r.week))+kv('Dieser Monat',nf(r.month))+kv('Ø pro Woche',dec1(r.perWeek))+kv('Aktivster Monat',r.best||'–');
+  h+='<div class="gl">Musik</div>';
+  var tm=r.top.length?r.top[0].c:1;
+  h+=(r.top.length?r.top.map(function(t){return '<div class="etop"><span>'+esc(t.n)+'</span><div><i style="width:'+Math.round(t.c/tm*100)+'%"></i></div><u>'+t.c+'</u></div>'}).join(''):kv('Top Interpreten','–'))
+   +kv('Häufigstes Jahrzehnt',r.dec||'–')+kv('Ältestes Album',ab(r.oldest))+kv('Neuestes Album',ab(r.newest))+kv('Songs mit Feat.',nf(r.feat));
+  h+='<div class="gl">Playlists</div>'+kv('Größte Playlist',r.bigPl?esc(r.bigPl.n)+' · '+r.bigPl.c:'–')+kv('Ø Songs pro Playlist',r.pl?dec1(r.avgPl):'–');
+  return h+'<div style="height:24px"></div>';
+ }
 
 })();</script></body></html>
