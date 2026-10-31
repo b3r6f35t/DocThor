@@ -805,6 +805,9 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
 /* V32: Kopf als „sticky“ statt „fixed“ (iOS 26 weichzeichnet feste Leisten am oberen Rand) */
 #hd{position:sticky;top:0;height:calc(env(safe-area-inset-top) + 52px);margin-bottom:calc(-1 * (env(safe-area-inset-top) + 52px));transform:none}
 @media(min-width:900px){#hd{margin-left:220px}}
+
+/* V32: feine Linie unter dem Kopf immer sichtbar */
+#hd,#hd.sc{box-shadow:0 1px 0 var(--ln)!important}
 </style>
 <div id="hd"><div id="hdr"></div></div>
 <div id="offs" hidden><i></i>Keine Verbindung · Änderungen gesperrt</div>
