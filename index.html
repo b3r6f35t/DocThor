@@ -809,6 +809,10 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
 /* V32: feine Linie unter dem Kopf immer sichtbar */
 #hd,#hd.sc{box-shadow:none!important}
 #hd::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ln);pointer-events:none}
+
+/* V32: Sprungleiste mit Blase */
+.idb{position:fixed;right:34px;top:50%;width:54px;height:54px;margin-top:-27px;border-radius:27px 27px 4px 27px;background:#2f6b3f;color:#fff;font:700 28px/54px Georgia,serif;text-align:center;z-index:9;pointer-events:none;opacity:0;transform:scale(.8);transition:opacity .12s,transform .12s}
+.idb.on{opacity:1;transform:none}
 </style>
 <div id="hd"><div id="hdr"></div></div>
 <div id="offs" hidden><i></i>Keine Verbindung · Änderungen gesperrt</div>
@@ -824,6 +828,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
    <div id="mel"></div>
    <div class="emp" id="mee" hidden></div>
    <div class="idx" id="meidx" hidden></div>
+   <div class="idb" id="meib"></div>
   </section>
   <section class="page" id="p-se"><div id="se"></div></section>
   <section class="page" id="p-pl">
@@ -2870,8 +2875,8 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
   return '<div class="lr tp" data-k="s'+s.id+'"><div class="lc'+(cu?' cv':'')+'"'+covStyle(cu)+'>'+(cu?'':ICON_NOTE)+'</div><div class="m"><b>'+esc(s.title)+(fn.length?' <span class="ft2">(feat. '+esc(fn.join(' & '))+')</span>':'')+'</b><div class="s">'+esc((ar?ar.name:'Interpret fehlt')+(M.al[s.album]?' · '+M.al[s.album].title:''))+'</div></div>'+rowRight(st)+'</div>';
  }
  function albRow(a,M,n,noArt){
-  var ar=M.a[a.artist],cu=img(a.cover),right=albMiss(a,n).length?dotWord('entwurf'):isUnv(a)?'<span class="hp">Unvollständig</span>':'';
-  return '<div class="lr tp" data-k="a'+a.id+'"><div class="lc'+(cu?' cv':'')+'"'+covStyle(cu)+'>'+(cu?'':ICON_DISC)+'</div><div class="m"><b>'+esc(a.title)+'</b><div class="s">'+esc((noArt?'':(ar?ar.name:'Interpret fehlt')+(relTxt(a)?' · ':''))+relTxt(a))+'</div></div>'+right+'</div>';
+  var ar=M.a[a.artist],cu=img(a.cover),right=albMiss(a,n).length?dotWord('entwurf'):isUnv(a)?'<span class="hp">Unvollständig</span>':'',rt=right?(a.rel?a.rel.split('-')[0]:(a.year?String(a.year):'')):relTxt(a);
+  return '<div class="lr tp" data-k="a'+a.id+'"><div class="lc'+(cu?' cv':'')+'"'+covStyle(cu)+'>'+(cu?'':ICON_DISC)+'</div><div class="m"><b>'+esc(a.title)+'</b><div class="s">'+esc((noArt?'':(ar?ar.name:'Interpret fehlt')+(rt?' · ':''))+rt)+'</div></div>'+right+'</div>';
  }
  function intRow(a){
   var n=D.albums.filter(function(x){return x.artist===a.id&&!noteOpen(x)}).length,sn=D.songs.filter(function(s){return s.artist===a.id&&s.state!=='neu'}).length,c=img(a.image);
@@ -2953,9 +2958,11 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
   if(a==='alle'){ME.f[ME.t]='alle';renderMe()}
   else if(a==='nz')notizOpen('','');
  });
- function idxJump(x,y){var el=document.elementFromPoint(x,y);if(!el||!el.getAttribute||!el.getAttribute('data-l'))return;var t=$('sec-'+el.getAttribute('data-l'));if(t)window.scrollTo(0,t.getBoundingClientRect().top+window.scrollY-(52+($('mehd').offsetHeight||84)+6))}
+ var IB=null;function ibShow(el,y){var b=$('meib'),l=el.getAttribute('data-l');b.textContent=l==='hash'?'#':l;b.style.top=y+'px';b.classList.add('on');clearTimeout(IB);IB=setTimeout(function(){b.classList.remove('on')},700)}
+ function idxJump(x,y){var el=document.elementFromPoint(x,y);if(!el||!el.getAttribute||!el.getAttribute('data-l'))return;ibShow(el,y);var t=$('sec-'+el.getAttribute('data-l'));if(t)window.scrollTo(0,t.getBoundingClientRect().top+window.scrollY-(52+($('mehd').offsetHeight||84)+6))}
  $('meidx').addEventListener('touchstart',function(e){var t=e.touches[0];idxJump(t.clientX,t.clientY)},{passive:true});
  $('meidx').addEventListener('touchmove',function(e){var t=e.touches[0];idxJump(t.clientX,t.clientY)},{passive:true});
+ $('meidx').addEventListener('touchend',function(){clearTimeout(IB);IB=setTimeout(function(){$('meib').classList.remove('on')},250)},{passive:true});
  $('meidx').addEventListener('click',function(e){var l=e.target.getAttribute&&e.target.getAttribute('data-l');if(l){var t=$('sec-'+l);if(t)window.scrollTo(0,t.getBoundingClientRect().top+window.scrollY-(52+($('mehd').offsetHeight||84)+6))}});
  /* ---------- V32 Teil 3: Suche (Lupe im Kopf) ---------- */
  var SE={q:'',all:{}};
