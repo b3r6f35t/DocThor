@@ -807,7 +807,8 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
 @media(min-width:900px){#hd{margin-left:220px}}
 
 /* V32: feine Linie unter dem Kopf immer sichtbar */
-#hd,#hd.sc{box-shadow:0 1px 0 var(--ln)!important}
+#hd,#hd.sc{box-shadow:none!important}
+#hd::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ln);pointer-events:none}
 </style>
 <div id="hd"><div id="hdr"></div></div>
 <div id="offs" hidden><i></i>Keine Verbindung · Änderungen gesperrt</div>
