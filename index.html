@@ -905,6 +905,13 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
 }
 
 @media(min-width:1000px){#tabs button:focus{outline:none}#tabs button:focus-visible{outline:2px solid var(--ac);outline-offset:-2px}}
+#mnu .trr{display:flex;align-items:center;gap:12px;padding:10px 22px}
+#mnu .trr .m{flex:1;min-width:0}
+#mnu .trr .m b{display:block;font-size:16px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#mnu .trr .s{font-size:13px;color:var(--s);margin-top:2px;white-space:normal;overflow:visible;text-overflow:clip}
+#mnu .trb{flex:none;color:var(--mint);font-size:15px;font-weight:600;padding:8px 4px}
+#mnu .trl{padding:18px 22px 8px}
+#mnu .trd{color:#b3402f;font-size:16px;padding:8px 0}
 </style>
 <div id="hd"><div id="hdr"></div></div>
 <div id="offs" hidden><i></i>Keine Verbindung · Änderungen gesperrt</div>
@@ -1067,7 +1074,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  var root=document.documentElement;
  function $(i){return document.getElementById(i)}
  function LS(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k));if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
- var VERSION='33';
+ var VERSION='34';
  /* ---------- Darstellung: Dunkel ist Standard, Hell wählbar ---------- */
  var mode=LS('dt-theme'),mq=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):null,cur='light';
  if(mode!=='dark'&&mode!=='light')mode='auto';
@@ -1122,8 +1129,8 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  $('cfn').onclick=close;
  /* ---------- Daten ---------- */
  var DEMO=!(window.google&&google.script&&google.script.run);
- var D={songs:[],artists:[],albums:[],playlists:[],links:[]},Q=[],busy=false,READY=false,FAIL=false,META={backup:0},SYNC=0;
- function norm(g){var o={};['songs','artists','albums','playlists','links'].forEach(function(k){o[k]=(g&&g[k])||[]});return o}
+ var D={songs:[],artists:[],albums:[],playlists:[],links:[],trash:[]},Q=[],busy=false,READY=false,FAIL=false,META={backup:0},SYNC=0;
+ function norm(g){var o={};['songs','artists','albums','playlists','links','trash'].forEach(function(k){o[k]=(g&&g[k])||[]});return o}
  function persist(){LS(DEMO?'dt.demo':'dt.cache',D);if(!DEMO)LS('dt.q',Q)}
  function put(c,r){var a=D[c],i=-1;for(var k=0;k<a.length;k++)if(a[k].id===r.id){i=k;break}if(i>=0)a[i]=r;else a.push(r);Q.push({t:'put',c:c,r:r});persist();flush()}
  function del(c,id){D[c]=D[c].filter(function(x){return x.id!==id});Q.push({t:'del',c:c,id:id});persist();flush()}
@@ -1135,7 +1142,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  }
  function pull(){
   if(DEMO)return;
-  google.script.run.withSuccessHandler(function(g){if(Q.length||busy)return;D=norm(g);META.backup=(g&&g.backup)||0;SYNC=Date.now();LS('dt.cache',D);READY=true;FAIL=false;setOffline(false);render()}).withFailureHandler(function(){if(!READY){FAIL=true;READY=true}else setOffline(true);render()}).getAll();
+  google.script.run.withSuccessHandler(function(g){if(Q.length||busy)return;D=norm(g);META.backup=(g&&g.backup)||0;SYNC=Date.now();LS('dt.cache',D);READY=true;FAIL=false;setOffline(false);trashPurge();render()}).withFailureHandler(function(){if(!READY){FAIL=true;READY=true}else setOffline(true);render()}).getAll();
  }
  function cp(o){return JSON.parse(JSON.stringify(o))}
  var COV={},MISS={},NF=LS('dt.nf')||{},LOADING=0,IDB=null,RT=null;
@@ -1391,10 +1398,11 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
   var m=$('mnu'),h='';m.classList.toggle('wide',MV!=='main');
   if(MV==='main'){
    h='<div class="mh"><b>DocThor</b><small>Version '+VERSION+'</small><button class="mx" id="mx" aria-label="Schließen"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>'
-    +'<div class="gl">Sammlung</div><button class="it" data-m="eck">'+ICO.eck+'Eckdaten</button><button class="it dim" data-m="aufr">'+ICO.aufr+'Aufräumen<span class="sb2">bald</span></button>'
+    +'<div class="gl">Sammlung</div><button class="it" data-m="eck">'+ICO.eck+'Eckdaten</button><div class="gl">Aufräumen</div><button class="it" data-m="pk">'+ICO.aufr+'Papierkorb'+(D.trash.length?'<span class="v">'+D.trash.length+' ›</span>':'')+'</button>'
     +'<div class="gl">App</div><button class="it" data-m="set">'+ICO.set+'Einstellungen</button><div class="sp"></div><button class="it" data-m="hilfe">'+ICO.hilfe+'Hilfe</button>';
   }else if(MV==='eck'){h=eckHtml()
   }else if(MV==='hilfe'){h=helpHtml()
+  }else if(MV==='pk'){h=trashHtml()
   }else{
    var bk=META.backup,bks=bk?(new Date(bk).toDateString()===new Date().toDateString()?'heute ':fmtDate(bk).slice(0,6)+' ')+('0'+new Date(bk).getHours()).slice(-2)+':'+('0'+new Date(bk).getMinutes()).slice(-2):(DEMO?'Demo':'noch keine');
    var cn=DEMO?'Demo':OFFL||FAIL?'keine Verbindung':(SYNC?'verbunden':'verbunden');
@@ -1413,14 +1421,14 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  $('mnu').addEventListener('click',function(e){
   if(e.target.closest('#mx')){mnuClose();return}
   var b=e.target.closest('[data-m]');if(!b)return;var m=b.getAttribute('data-m');
-  if(m==='set'||m==='eck'||m==='hilfe'){MV=m;MS={};mnuPaint();$('mnu').scrollTop=0;return}
+  if(m==='tr-r'||m==='tr-e'){trashClick(m,b);return}
+  if(m==='set'||m==='eck'||m==='hilfe'||m==='pk'){MV=m;MS={};mnuPaint();$('mnu').scrollTop=0;return}
   if(m==='h'){var k=b.getAttribute('data-k');MS.h=MS.h===k?null:k;mnuPaint();return}
   if(m==='main'){MV='main';mnuPaint();return}
   if(m==='x-dar'){MS.dar=!MS.dar;mnuPaint();return}
   if(m==='x-svc'){MS.svc=!MS.svc;mnuPaint();return}
   if(m==='key'){mnuClose();suOpen('',true);return}
   mnuClose();
-  if(m==='aufr')setTimeout(function(){snack('Kommt später')},250);
  });
  var mx0=null;
  $('mnu').addEventListener('touchstart',function(e){mx0=e.touches[0].clientX},{passive:true});
@@ -2745,16 +2753,71 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
   confirm2(txt,'Ja, löschen',function(){
    var feats=[];
    if(e.kind==='artist')D.songs.forEach(function(s){if(featIds(s).indexOf(e.rec.id)>=0&&!S.songs.some(function(y){return y.id===s.id})){S.songs.push(cp(s));feats.push(s.id)}});
+   var an=e.kind==='song'||e.kind==='album'?artById(e.rec.artist):null,lab=e.kind==='playlist'||e.kind==='artist'?e.rec.name:e.rec.title,tsub=(e.st==='neu'&&e.kind==='song'?'Notiz':KW[e.kind])+(an?' · '+an.name:'')+(e.kind==='album'&&S.songs.length?' · '+plural(S.songs.length,'Song','Songs'):'')+(e.kind==='playlist'?' · '+plural(S.links.length,'Song','Songs'):'');
+   var tid=trashAdd(e.kind,lab,tsub,S,e.kind==='playlist'?S.links.length:S.songs.length);
    S.links.forEach(function(l){del('links',l.id)});
    S.songs.forEach(function(s){if(feats.indexOf(s.id)>=0){var x=cp(s);x.feat=featIds(s).filter(function(i){return i!==e.rec.id}).join(',');put('songs',x)}else del('songs',s.id)});
    S.albums.forEach(function(a){del('albums',a.id)});S.artists.forEach(function(a){del('artists',a.id)});S.playlists.forEach(function(p){del('playlists',p.id)});
    var pg=curPage();if((pg==='song'&&e.kind==='song')||(pg==='alb'&&e.kind==='album')||(pg==='int'&&e.kind==='artist')||(pg==='plc'&&e.kind==='playlist')){CS=CA=CI=CP=null;if(!pop())showPage(tabPage())}
    ED=null;PX.inter=null;PX.f=null;PX.edit=null;if(PULT.key===key)PULT.key=null;
    snack((e.st==='neu'&&e.kind==='song'?'Notiz':KW[e.kind])+' gelöscht','Rückgängig',function(){
-    ['artists','albums','playlists','songs','links'].forEach(function(c){S[c].forEach(function(r){put(c,r)})});render();
+    ['artists','albums','playlists','songs','links'].forEach(function(c){S[c].forEach(function(r){put(c,r)})});if(tid)del('trash',tid);render();
    });
    render();
   });
+ }
+
+ /* ---------- Papierkorb ---------- */
+ var TRASH_D=30;
+ function trashAdd(kind,label,sub,S,n){
+  var js=JSON.stringify(S);if(js.length>90000)return null;
+  var id='T'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+  put('trash',{id:id,kind:kind,label:label,sub:sub,at:Date.now(),n:n||0,p1:js.slice(0,45000),p2:js.slice(45000)});
+  return id;
+ }
+ function trashPurge(){
+  var lim=Date.now()-TRASH_D*86400000;
+  (D.trash||[]).filter(function(t){return t.at&&t.at<lim}).forEach(function(t){del('trash',t.id)});
+ }
+ function trashFind(c,id){
+  var m='"id":"'+id+'"';
+  for(var i=0;i<D.trash.length;i++){var t=D.trash[i];if(((t.p1||'')+(t.p2||'')).indexOf(m)<0)continue;try{if(JSON.parse((t.p1||'')+(t.p2||''))[c].some(function(x){return x.id===id}))return t}catch(e){}}
+  return null;
+ }
+ function trashRestore(id,seen){
+  seen=seen||{};if(seen[id])return false;seen[id]=1;
+  var t=D.trash.filter(function(x){return x.id===id})[0];if(!t)return false;
+  var S;try{S=JSON.parse((t.p1||'')+(t.p2||''))}catch(e){return false}
+  function has(c,i){return D[c].some(function(x){return x.id===i})||S[c].some(function(x){return x.id===i})}
+  function dep(c,i){if(!i||has(c,i))return true;var o=trashFind(c,i);return !!o&&trashRestore(o.id,seen)}
+  var ok=true;
+  S.albums.forEach(function(a){if(!dep('artists',a.artist))ok=false});
+  S.songs.forEach(function(x){if(!dep('artists',x.artist))ok=false;if(!dep('albums',x.album))ok=false});
+  if(!ok)return false;
+  ['artists','albums','playlists','songs'].forEach(function(c){S[c].forEach(function(r){put(c,r)})});
+  S.links.forEach(function(l){if(has('playlists',l.playlist)&&has('songs',l.song))put('links',l)});
+  del('trash',id);return true;
+ }
+ function trashGroup(at){
+  var d=Math.floor((new Date(new Date().toDateString())-new Date(new Date(at).toDateString()))/86400000);
+  return d<=0?'Heute':d===1?'Gestern':'Vor '+d+' Tagen';
+ }
+ function trashHtml(){
+  var h='<div class="sub"><button class="back" data-m="main">'+ICON_BACK+'Menü</button><h2>Papierkorb</h2></div><div style="border-top:1px solid var(--ln)"></div>';
+  var l=D.trash.slice().sort(function(a,b){return b.at-a.at});
+  if(!l.length)return h+'<div class="kvw" style="color:var(--s)">Der Papierkorb ist leer.</div>';
+  var last='';
+  l.forEach(function(t){
+   var g=trashGroup(t.at);if(g!==last){h+='<div class="gl">'+g+'</div>';last=g}
+   var left=Math.max(1,TRASH_D-Math.floor((Date.now()-t.at)/86400000));
+   h+='<div class="trr"><div class="m"><b>'+esc(t.label)+'</b><div class="s">'+esc(t.sub)+' · noch '+plural(left,'Tag','Tage')+'</div></div><button class="trb" data-m="tr-r" data-k="'+t.id+'">Zurückholen</button></div>';
+  });
+  return h+'<div class="trl"><button class="trd" data-m="tr-e">Papierkorb leeren</button></div>';
+ }
+ function trashClick(m,b){
+  if(m==='tr-r'){var k=b.getAttribute('data-k'),t=D.trash.filter(function(x){return x.id===k})[0];if(!t)return;
+   if(trashRestore(k)){snack('„'+t.label+'“ zurückgeholt');render();mnuPaint()}else snack('Geht nicht: dazu fehlt ein anderer gelöschter Eintrag')}
+  else if(m==='tr-e'){if(!D.trash.length)return;confirm2('Alles im Papierkorb wird endgültig gelöscht ('+plural(D.trash.length,'Eintrag','Einträge')+').','Ja, löschen',function(){D.trash.slice().forEach(function(t){del('trash',t.id)});snack('Papierkorb geleert');mnuPaint();render()},{danger:true})}
  }
 
  /* ---------- Interpret vereinen ---------- */
@@ -2781,9 +2844,10 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
    D.songs.slice().forEach(function(s){var ch=false,x=cp(s);if(x.artist===a.id){x.artist=to.id;ch=true}var fi=featIds(s);if(fi.indexOf(a.id)>=0){x.feat=fi.map(function(i){return i===a.id?to.id:i}).filter(function(v,k,arr){return arr.indexOf(v)===k}).join(',');ch=true}if(ch){oldS.push(cp(s));put('songs',x)}});
    D.albums.slice().forEach(function(al){if(al.artist===a.id){oldA.push(cp(al));var y=cp(al);y.artist=to.id;put('albums',y)}});
    if(!to.image&&a.image){var t2=cp(to);t2.image=a.image;put('artists',t2)}
+   var tid=trashAdd('artist',a.name,'Interpret · vereint mit „'+to.name+'“',{songs:[],albums:[],artists:[oldF],playlists:[],links:[]},0);
    del('artists',a.id);
    var pg=curPage();CI=to.id;if(pg==='int'){}else{CI=to.id}
-   snack('„'+a.name+'“ vereint mit „'+to.name+'“','Rückgängig',function(){put('artists',oldF);put('artists',oldT);oldS.forEach(function(s){put('songs',s)});oldA.forEach(function(x){put('albums',x)});if(curPage()==='int')CI=a.id;render()});
+   snack('„'+a.name+'“ vereint mit „'+to.name+'“','Rückgängig',function(){if(tid)del('trash',tid);put('artists',oldF);put('artists',oldT);oldS.forEach(function(s){put('songs',s)});oldA.forEach(function(x){put('albums',x)});if(curPage()==='int')CI=a.id;render()});
    if(pg==='int'){CI=to.id}else{}
    render();
   },{})},280);
@@ -3251,11 +3315,11 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  };
  $('pec').onclick=close;
  $('pex').onclick=function(){var p=plById(CP);if(!p)return;close();setTimeout(function(){confirm2('Die Playlist „'+p.name+'“ wird gelöscht. Die Songs bleiben in der Mediathek.','Playlist löschen',function(){
-  D.links.filter(function(l){return l.playlist===CP}).forEach(function(l){del('links',l.id)});del('playlists',CP);CP=null;delete SRT[p.id];LS('dt.sort',SRT);if(!pop())showPage('pl');snack('Playlist gelöscht');render()},{danger:true})},280)};
+  var tS={songs:[],albums:[],artists:[],playlists:[cp(p)],links:D.links.filter(function(l){return l.playlist===CP}).map(cp)},tid=trashAdd('playlist',p.name,'Playlist · '+plural(tS.links.length,'Song','Songs'),tS,tS.links.length);D.links.filter(function(l){return l.playlist===CP}).forEach(function(l){del('links',l.id)});del('playlists',CP);CP=null;delete SRT[p.id];LS('dt.sort',SRT);if(!pop())showPage('pl');snack('Playlist gelöscht','Rückgängig',function(){tS.playlists.forEach(function(x){put('playlists',x)});tS.links.forEach(function(x){put('links',x)});if(tid)del('trash',tid);render()});render()},{danger:true})},280)};
  /* ---------- Start ---------- */
  function boot(){
   suInit();document.body.classList.add('st');setHeader();bootState();
-  if(DEMO){var d=LS('dt.demo');if(d)D=norm(d);READY=true;render();return}
+  if(DEMO){var d=LS('dt.demo');if(d)D=norm(d);READY=true;trashPurge();render();return}
   var c=LS('dt.cache');if(c){D=norm(c);READY=true}
   Q=LS('dt.q')||[];
   idbOpen(function(){idbAll(function(){render();flush();pull()})});
@@ -3442,14 +3506,14 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  }
 
  /* ---------- V33: Mac-Layout (ab 1000 px Fensterbreite) ---------- */
- var MNT={eck:'Eckdaten',set:'Einstellungen',hilfe:'Hilfe'};
+ var MNT={eck:'Eckdaten',set:'Einstellungen',hilfe:'Hilfe',pk:'Papierkorb'};
  (function(){
   var t=$('tabs');
   var head=document.createElement('div');head.className='sbx sbh';head.innerHTML='<b>DocThor</b><small>Version '+VERSION+'</small>';
   t.insertBefore(head,t.firstChild);
   var ic={eck:ICO.eck,aufr:ICO.aufr,set:ICO.set,hilfe:ICO.hilfe};
   var ex=document.createElement('div');ex.className='sbx sbe';
-  ex.innerHTML='<div class="g">Sammlung</div><button data-sb="eck">'+ic.eck+'Eckdaten</button><button class="dim" data-sb="aufr">'+ic.aufr+'Aufräumen<em>bald</em></button><div class="sp"></div><div class="g">App</div><button data-sb="set">'+ic.set+'Einstellungen</button><button data-sb="hilfe">'+ic.hilfe+'Hilfe</button>';
+  ex.innerHTML='<div class="g">Sammlung</div><button data-sb="eck">'+ic.eck+'Eckdaten</button><div class="g">Aufräumen</div><button data-sb="pk">'+ic.aufr+'Papierkorb</button><div class="sp"></div><div class="g">App</div><button data-sb="set">'+ic.set+'Einstellungen</button><button data-sb="hilfe">'+ic.hilfe+'Hilfe</button>';
   t.appendChild(ex);
  })();
  function macCur(v){[].forEach.call(document.querySelectorAll('#tabs [data-sb]'),function(b){b.classList.toggle('cur',b.getAttribute('data-sb')===v)});[].forEach.call(document.querySelectorAll('#tabs [data-p]'),function(b){b.classList.toggle('dimn',!!v)})}
@@ -3458,7 +3522,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  var _mc=mnuClose;mnuClose=function(){_mc();macCur(null);if(MACW())setHeader()};
  $('tabs').addEventListener('click',function(e){
   var b=e.target.closest('[data-sb]');
-  if(b){var v=b.getAttribute('data-sb');if(v==='aufr'){snack('Kommt später');return}if(MV===v&&$('mnu').classList.contains('on'))return;mnuOpen(v);return}
+  if(b){var v=b.getAttribute('data-sb');if(MV===v&&$('mnu').classList.contains('on'))return;mnuOpen(v);return}
   if(e.target.closest('[data-p]')&&$('mnu').classList.contains('on'))mnuClose();
  });
  /* markierter Eintrag in der Liste */
