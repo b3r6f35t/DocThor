@@ -912,6 +912,17 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
 #mnu .trb{flex:none;color:var(--mint);font-size:15px;font-weight:600;padding:8px 4px}
 #mnu .trl{padding:18px 22px 8px}
 #mnu .trd{color:#b3402f;font-size:16px;padding:8px 0}
+#mnu .dpt{display:flex;gap:6px;padding:12px 22px 2px;overflow-x:auto}
+#mnu .dpt button{flex:none;padding:7px 12px;border-radius:16px;background:var(--cd);border:1px solid var(--ln);font-size:14px;color:var(--s)}
+#mnu .dpt button.on{background:var(--mint);border-color:var(--mint);color:#fff}
+#mnu .dpc{margin:8px 22px;padding:14px;background:var(--cd);border:1px solid var(--ln);border-radius:14px}
+#mnu .dpc b{display:block;font-size:17px}
+#mnu .dpc .s{font-size:13px;color:var(--s);margin-top:3px;white-space:normal}
+#mnu .dpk{margin-top:12px;width:100%;padding:10px;border-radius:10px;background:var(--mint);color:#fff;font-weight:600;font-size:15px}
+#mnu .dpf{display:flex;justify-content:space-between;padding:14px 22px}
+#mnu .dpf button{font-size:15px;color:var(--s);padding:8px 0}
+@media(max-width:999px){#cf.on{z-index:50;box-shadow:0 0 0 200vmax var(--ov)}}
+@media(min-width:1000px){#mnu>.dpc{max-width:596px;margin-left:auto;margin-right:auto}}
 </style>
 <div id="hd"><div id="hdr"></div></div>
 <div id="offs" hidden><i></i>Keine Verbindung · Änderungen gesperrt</div>
@@ -1129,8 +1140,8 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  $('cfn').onclick=close;
  /* ---------- Daten ---------- */
  var DEMO=!(window.google&&google.script&&google.script.run);
- var D={songs:[],artists:[],albums:[],playlists:[],links:[],trash:[]},Q=[],busy=false,READY=false,FAIL=false,META={backup:0},SYNC=0;
- function norm(g){var o={};['songs','artists','albums','playlists','links','trash'].forEach(function(k){o[k]=(g&&g[k])||[]});return o}
+ var D={songs:[],artists:[],albums:[],playlists:[],links:[],trash:[],ign:[]},Q=[],busy=false,READY=false,FAIL=false,META={backup:0},SYNC=0;
+ function norm(g){var o={};['songs','artists','albums','playlists','links','trash','ign'].forEach(function(k){o[k]=(g&&g[k])||[]});return o}
  function persist(){LS(DEMO?'dt.demo':'dt.cache',D);if(!DEMO)LS('dt.q',Q)}
  function put(c,r){var a=D[c],i=-1;for(var k=0;k<a.length;k++)if(a[k].id===r.id){i=k;break}if(i>=0)a[i]=r;else a.push(r);Q.push({t:'put',c:c,r:r});persist();flush()}
  function del(c,id){D[c]=D[c].filter(function(x){return x.id!==id});Q.push({t:'del',c:c,id:id});persist();flush()}
@@ -1391,18 +1402,19 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
 
  /* ---------- Menü-Streifen und Einstellungen ---------- */
  var MV='main',MS={};
- var ICO={eck:'<svg viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>',aufr:'<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>',set:'<svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>',hilfe:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7M12 17h.01"/></svg>',dar:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/></svg>',svc:'<svg viewBox="0 0 24 24"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg>',bk:'<svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5l2-2M20 4v4h-4M20 12a8 8 0 0 1-14 5l-2 2M4 20v-4h4"/></svg>',cn:'<svg viewBox="0 0 24 24"><path d="M5 12a7 7 0 0 1 14 0M8 14a4 4 0 0 1 8 0M12 18h.01"/></svg>'};
+ var ICO={dup:'<svg viewBox="0 0 24 24"><rect x="4" y="4" width="11" height="11" rx="2"/><path d="M9 20h9a2 2 0 0 0 2-2V9"/></svg>',eck:'<svg viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>',aufr:'<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>',set:'<svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>',hilfe:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7M12 17h.01"/></svg>',dar:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/></svg>',svc:'<svg viewBox="0 0 24 24"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg>',bk:'<svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5l2-2M20 4v4h-4M20 12a8 8 0 0 1-14 5l-2 2M4 20v-4h4"/></svg>',cn:'<svg viewBox="0 0 24 24"><path d="M5 12a7 7 0 0 1 14 0M8 14a4 4 0 0 1 8 0M12 18h.01"/></svg>'};
  var MODEN={auto:'Automatisch',light:'Hell',dark:'Dunkel'};
  function ckIc(){return CK}
  function mnuPaint(){
   var m=$('mnu'),h='';m.classList.toggle('wide',MV!=='main');
   if(MV==='main'){
    h='<div class="mh"><b>DocThor</b><small>Version '+VERSION+'</small><button class="mx" id="mx" aria-label="Schließen"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>'
-    +'<div class="gl">Sammlung</div><button class="it" data-m="eck">'+ICO.eck+'Eckdaten</button><div class="gl">Aufräumen</div><button class="it" data-m="pk">'+ICO.aufr+'Papierkorb'+(D.trash.length?'<span class="v">'+D.trash.length+' ›</span>':'')+'</button>'
+    +'<div class="gl">Sammlung</div><button class="it" data-m="eck">'+ICO.eck+'Eckdaten</button><div class="gl">Aufräumen</div><button class="it" data-m="pk">'+ICO.aufr+'Papierkorb'+(D.trash.length?'<span class="v">'+D.trash.length+' ›</span>':'')+'</button><button class="it" data-m="dup">'+ICO.dup+'Dubletten'+(dupCount()?'<span class="v">'+dupCount()+' ›</span>':'')+'</button>'
     +'<div class="gl">App</div><button class="it" data-m="set">'+ICO.set+'Einstellungen</button><div class="sp"></div><button class="it" data-m="hilfe">'+ICO.hilfe+'Hilfe</button>';
   }else if(MV==='eck'){h=eckHtml()
   }else if(MV==='hilfe'){h=helpHtml()
   }else if(MV==='pk'){h=trashHtml()
+  }else if(MV==='dup'){h=dupHtml()
   }else{
    var bk=META.backup,bks=bk?(new Date(bk).toDateString()===new Date().toDateString()?'heute ':fmtDate(bk).slice(0,6)+' ')+('0'+new Date(bk).getHours()).slice(-2)+':'+('0'+new Date(bk).getMinutes()).slice(-2):(DEMO?'Demo':'noch keine');
    var cn=DEMO?'Demo':OFFL||FAIL?'keine Verbindung':(SYNC?'verbunden':'verbunden');
@@ -1422,7 +1434,8 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
   if(e.target.closest('#mx')){mnuClose();return}
   var b=e.target.closest('[data-m]');if(!b)return;var m=b.getAttribute('data-m');
   if(m==='tr-r'||m==='tr-e'){trashClick(m,b);return}
-  if(m==='set'||m==='eck'||m==='hilfe'||m==='pk'){MV=m;MS={};mnuPaint();$('mnu').scrollTop=0;return}
+  if(m.indexOf('dp-')===0){dupClick(m,b);return}
+  if(m==='set'||m==='eck'||m==='hilfe'||m==='pk'||m==='dup'){MV=m;MS={};mnuPaint();$('mnu').scrollTop=0;return}
   if(m==='h'){var k=b.getAttribute('data-k');MS.h=MS.h===k?null:k;mnuPaint();return}
   if(m==='main'){MV='main';mnuPaint();return}
   if(m==='x-dar'){MS.dar=!MS.dar;mnuPaint();return}
@@ -2821,6 +2834,19 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  }
 
  /* ---------- Interpret vereinen ---------- */
+ function mergeDo(a,to){
+  var oldS=[],oldA=[],oldT=cp(to),oldF=cp(a);
+  D.songs.slice().forEach(function(s){var ch=false,x=cp(s);if(x.artist===a.id){x.artist=to.id;ch=true}var fi=featIds(s);if(fi.indexOf(a.id)>=0){x.feat=fi.map(function(i){return i===a.id?to.id:i}).filter(function(v,k,arr){return arr.indexOf(v)===k}).join(',');ch=true}if(ch){oldS.push(cp(s));put('songs',x)}});
+  D.albums.slice().forEach(function(al){if(al.artist===a.id){oldA.push(cp(al));var y=cp(al);y.artist=to.id;put('albums',y)}});
+  if(!to.image&&a.image){var t2=cp(to);t2.image=a.image;put('artists',t2)}
+  var tid=trashAdd('artist',a.name,'Interpret · vereint mit „'+to.name+'“',{songs:[],albums:[],artists:[oldF],playlists:[],links:[]},0);
+  del('artists',a.id);
+  var pg=curPage();CI=to.id;if(pg==='int'){}else{CI=to.id}
+  snack('„'+a.name+'“ vereint mit „'+to.name+'“','Rückgängig',function(){if(tid)del('trash',tid);put('artists',oldF);put('artists',oldT);oldS.forEach(function(s){put('songs',s)});oldA.forEach(function(x){put('albums',x)});if(curPage()==='int')CI=a.id;render()});
+  if(pg==='int'){CI=to.id}else{}
+  render();
+
+ }
  var VM={from:null,to:null};
  function mergeOpen(id){
   var a=artById(id);if(!a)return;VM={from:id,to:null};
@@ -2840,16 +2866,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
   var na=D.albums.filter(function(x){return x.artist===a.id}).length,ns=D.songs.filter(function(s){return s.artist===a.id}).length;
   var txt='Alles von „'+a.name+'“ geht auf „'+to.name+'“ über ('+plural(na,'Album','Alben')+', '+plural(ns,'Song','Songs')+'). „'+a.name+'“ wird gelöscht, der Name „'+to.name+'“ bleibt.';
   close();setTimeout(function(){confirm2(txt,'Vereinen',function(){
-   var oldS=[],oldA=[],oldT=cp(to),oldF=cp(a);
-   D.songs.slice().forEach(function(s){var ch=false,x=cp(s);if(x.artist===a.id){x.artist=to.id;ch=true}var fi=featIds(s);if(fi.indexOf(a.id)>=0){x.feat=fi.map(function(i){return i===a.id?to.id:i}).filter(function(v,k,arr){return arr.indexOf(v)===k}).join(',');ch=true}if(ch){oldS.push(cp(s));put('songs',x)}});
-   D.albums.slice().forEach(function(al){if(al.artist===a.id){oldA.push(cp(al));var y=cp(al);y.artist=to.id;put('albums',y)}});
-   if(!to.image&&a.image){var t2=cp(to);t2.image=a.image;put('artists',t2)}
-   var tid=trashAdd('artist',a.name,'Interpret · vereint mit „'+to.name+'“',{songs:[],albums:[],artists:[oldF],playlists:[],links:[]},0);
-   del('artists',a.id);
-   var pg=curPage();CI=to.id;if(pg==='int'){}else{CI=to.id}
-   snack('„'+a.name+'“ vereint mit „'+to.name+'“','Rückgängig',function(){if(tid)del('trash',tid);put('artists',oldF);put('artists',oldT);oldS.forEach(function(s){put('songs',s)});oldA.forEach(function(x){put('albums',x)});if(curPage()==='int')CI=a.id;render()});
-   if(pg==='int'){CI=to.id}else{}
-   render();
+   mergeDo(a,to);
   },{})},280);
  };
  /* Album: Online abgleichen (nur Fenster mit Vorschlägen, Übernehmen mit Häkchen) */
@@ -3412,6 +3429,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
    ['Merkliste und „Gefunden“','Hast du einen Song im Streaming-Dienst nicht gefunden, geht er auf die Merkliste. Nach 28 Tagen kommt er wieder ans Pult. Dann suchst du noch einmal: „Gefunden“ bringt dich zurück zur Checkliste, „Noch nicht“ startet weitere 28 Tage. Bis dahin steht er unter „Zurückgestellt“.'],
    ['Später und Nächster Beitrag','**Später** legt einen Eintrag für 7 Tage zur Seite. **Nächster Beitrag** stellt ihn ans Ende der Warteschlange, ganz ohne Pause: Du machst zuerst mit den anderen weiter.'],
    ['Papierkorb','Wenn du einen Song, ein Album, einen Interpreten oder eine Playlist löschst, landet er im **Papierkorb**. Du findest ihn im Menü unter **Aufräumen**. Dort holst du Gelöschtes mit **Zurückholen** wieder, samt Songs und Playlists. Nach **30 Tagen** wird es endgültig gelöscht. Mit **Papierkorb leeren** geht es sofort.'],
+   ['Dubletten','Unter **Aufräumen › Dubletten** zeigt DocThor Einträge, die doppelt aussehen: gleicher Titel beim gleichen Interpreten, bei Interpreten und Playlists ein fast gleicher Name. Du siehst immer ein Paar. Mit **Den behalten** bestimmst du, welcher bleibt. Der andere wird vereint (seine Playlists und Songs gehen auf den behaltenen über) und kommt in den Papierkorb. **Keine Dublette** merkt sich das Paar, **Später** zeigt es erst beim nächsten Mal wieder.'],
    ['Album heißt jede Veröffentlichung','In DocThor ist „Album“ der Sammelname für alles, was jemand veröffentlicht. Beim Anlegen wählst du den Typ: **Album, EP, Single, Live oder Sonstige**. Sampler, Soundtracks und Compilations gehören zu „Sonstige“. Eine einzelne Single trägst du als Album mit dem Songtitel ein.'],
    ['Unvollständige Alben und „So lassen“','Sind nicht alle Titel eines Albums als Songs angelegt, steht in der Liste die Pille **Unvollständig**. Auf der Albumkarte zeigt ein Feld, wie viele fehlen („3 von 14 Titeln angelegt“). Mit **Titel ergänzen** legst du die übrigen an. Mit **So lassen** sagst du: Das ist Absicht, mir reichen diese Titel. Dann verschwinden Pille und Feld.'],
    ['Marken an den Feldern','Kleine Marken sagen dir, woher ein Wert kommt. **AUS NOTIZ**: aus deinem Text. **AUS TREFFER**: online gefunden. **IN DEINER SAMMLUNG**: gibt es schon. **NEU**: wird beim Weiter neu angelegt. Ein vorausgefüllter Wert gilt erst als bestätigt, wenn du „Weiter“ tippst. Änderst du ihn, verschwindet die Marke.'],
@@ -3506,15 +3524,78 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
   return h+'<div style="height:24px"></div>';
  }
 
+ /* ---------- Dubletten (Menü › Aufräumen) ---------- */
+ var DP={k:'songs',later:{}};
+ var DPK=[['songs','Songs'],['albums','Alben'],['artists','Interpreten'],['playlists','Playlists']];
+ function dkey(x){return String(x||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s*[\(\[]\s*(feat|ft|featuring|with)\.?[^\)\]]*[\)\]]/g,'').replace(/[^a-z0-9]+/g,'')}
+ function ignId(k,a,b){return k.charAt(0)+'_'+(a<b?a+'_'+b:b+'_'+a)}
+ function dupPairs(k){
+  var g={},out=[],list=k==='songs'?D.songs.filter(function(s){return s.state!=='neu'&&!noteOpen(s)}):k==='albums'?D.albums.filter(function(a){return !noteOpen(a)}):k==='artists'?D.artists.filter(function(a){return !noteOpen(a)}):D.playlists.filter(function(p){return !noteOpen(p)});
+  list.forEach(function(x){var nm=k==='songs'||k==='albums'?x.title:x.name,dk=dkey(nm);if(!dk)return;var key=k==='songs'||k==='albums'?x.artist+'|'+dk:dk;(g[key]=g[key]||[]).push(x)});
+  Object.keys(g).forEach(function(key){var l=g[key];for(var i=1;i<l.length;i++){var id=ignId(k,l[0].id,l[i].id);if(D.ign.some(function(x){return x.id===id}))continue;out.push([l[0],l[i]])}});
+  return out;
+ }
+ function dupCount(){var n=0;DPK.forEach(function(k){n+=dupPairs(k[0]).length});return n}
+ function dupCard(k,x,o){
+  var t,s1='',s2='';
+  if(k==='songs'){var ar=artById(x.artist),al=albById(x.album);t=x.title;s1=(ar?ar.name:'–')+' · '+(al?al.title:'–');s2='Titel '+x.track+' · '+fmtDur(x.dur)+' · '+SN[songStatus(x)]+' · '+plural(D.links.filter(function(l){return l.song===x.id}).length,'Playlist','Playlists')}
+  else if(k==='albums'){var ar2=artById(x.artist);t=x.title;s1=ar2?ar2.name:'–';s2=(x.year?x.year+' · ':'')+plural(D.songs.filter(function(s){return s.album===x.id}).length,'Song','Songs')}
+  else if(k==='artists'){t=x.name;s1=plural(D.albums.filter(function(a){return a.artist===x.id}).length,'Album','Alben')+' · '+plural(D.songs.filter(function(s){return s.artist===x.id}).length,'Song','Songs')}
+  else{t=x.name;s1=plural(D.links.filter(function(l){return l.playlist===x.id}).length,'Song','Songs')}
+  return '<div class="dpc"><b>'+esc(t)+'</b><div class="s">'+esc(s1)+'</div>'+(s2?'<div class="s">'+esc(s2)+'</div>':'')+'<button class="dpk" data-m="dp-keep" data-k="'+x.id+'" data-o="'+o.id+'">Den behalten</button></div>';
+ }
+ function dupHtml(){
+  var h='<div class="sub"><button class="back" data-m="main">'+ICON_BACK+'Menü</button><h2>Dubletten</h2></div><div style="border-top:1px solid var(--ln)"></div>';
+  h+='<div class="dpt">'+DPK.map(function(k){var n=dupPairs(k[0]).filter(function(p){return !DP.later[ignId(k[0],p[0].id,p[1].id)]}).length;return '<button class="'+(DP.k===k[0]?'on':'')+'" data-m="dp-k" data-k="'+k[0]+'">'+k[1]+(n?' '+n:'')+'</button>'}).join('')+'</div>';
+  var ps=dupPairs(DP.k).filter(function(p){return !DP.later[ignId(DP.k,p[0].id,p[1].id)]});
+  if(!ps.length)return h+'<div class="kvw" style="color:var(--s)">Keine Dubletten gefunden.</div>';
+  var p=ps[0];
+  h+='<div class="gl">Paar 1 von '+ps.length+'</div>'+dupCard(DP.k,p[0],p[1])+dupCard(DP.k,p[1],p[0])
+   +'<div class="dpf"><button data-m="dp-no" data-a="'+p[0].id+'" data-b="'+p[1].id+'">Keine Dublette</button><button data-m="dp-later" data-a="'+p[0].id+'" data-b="'+p[1].id+'">Später</button></div>';
+  return h;
+ }
+ function dupName(k,x){return k==='songs'||k==='albums'?x.title:x.name}
+ function dupMerge(k,keep,o){
+  var kind={songs:'song',albums:'album',artists:'artist',playlists:'playlist'}[k];
+  if(k==='artists'){mergeDo(o,keep);mnuPaint();return}
+  var tid,undo;
+  if(k==='songs'||k==='playlists'){
+   var isS=k==='songs',ls=D.links.filter(function(l){return isS?l.song===o.id:l.playlist===o.id}).map(cp),S={songs:isS?[cp(o)]:[],albums:[],artists:[],playlists:isS?[]:[cp(o)],links:ls};
+   tid=trashAdd(kind,dupName(k,o),(isS?'Song':'Playlist')+' · vereint mit „'+dupName(k,keep)+'“',S,ls.length);
+   ls.forEach(function(l){var dup=D.links.some(function(x){return isS?(x.playlist===l.playlist&&x.song===keep.id):(x.song===l.song&&x.playlist===keep.id)});if(dup)del('links',l.id);else{var y=cp(l);if(isS)y.song=keep.id;else y.playlist=keep.id;put('links',y)}});
+   del(k,o.id);
+   undo=function(){put(k,S[k][0]);ls.forEach(function(l){put('links',l)})};
+  }else{
+   var ss=D.songs.filter(function(s){return s.album===o.id}).map(cp),ok=cp(keep);
+   tid=trashAdd('album',o.title,'Album · vereint mit „'+keep.title+'“',{songs:[],albums:[cp(o)],artists:[],playlists:[],links:[]},ss.length);
+   ss.forEach(function(s){var y=cp(s);y.album=keep.id;put('songs',y)});
+   if(!keep.cover&&o.cover){var k2=cp(keep);k2.cover=o.cover;put('albums',k2)}
+   del('albums',o.id);
+   undo=function(){put('albums',o);put('albums',ok);ss.forEach(function(s){put('songs',s)})};
+  }
+  snack('„'+dupName(k,o)+'“ vereint','Rückgängig',function(){undo();if(tid)del('trash',tid);render();mnuPaint()});
+  render();mnuPaint();
+ }
+ function dupClick(m,b){
+  if(m==='dp-k'){DP.k=b.getAttribute('data-k');mnuPaint();return}
+  if(m==='dp-later'){DP.later[ignId(DP.k,b.getAttribute('data-a'),b.getAttribute('data-b'))]=1;mnuPaint();return}
+  if(m==='dp-no'){var a=b.getAttribute('data-a'),c=b.getAttribute('data-b');put('ign',{id:ignId(DP.k,a,c),kind:DP.k,a:a,b:c});snack('Gemerkt: keine Dublette');mnuPaint();return}
+  if(m==='dp-keep'){
+   var k=DP.k,get=k==='songs'?function(i){return D.songs.filter(function(x){return x.id===i})[0]}:k==='albums'?albById:k==='artists'?artById:plById;
+   var keep=get(b.getAttribute('data-k')),o=get(b.getAttribute('data-o'));if(!keep||!o)return;
+   confirm2('„'+dupName(k,keep)+'“ bleibt. Der andere Eintrag wird damit vereint und kommt in den Papierkorb.','Ja, vereinen',function(){dupMerge(k,keep,o)},{});
+  }
+ }
+
  /* ---------- V33: Mac-Layout (ab 1000 px Fensterbreite) ---------- */
- var MNT={eck:'Eckdaten',set:'Einstellungen',hilfe:'Hilfe',pk:'Papierkorb'};
+ var MNT={eck:'Eckdaten',set:'Einstellungen',hilfe:'Hilfe',pk:'Papierkorb',dup:'Dubletten'};
  (function(){
   var t=$('tabs');
   var head=document.createElement('div');head.className='sbx sbh';head.innerHTML='<b>DocThor</b><small>Version '+VERSION+'</small>';
   t.insertBefore(head,t.firstChild);
   var ic={eck:ICO.eck,aufr:ICO.aufr,set:ICO.set,hilfe:ICO.hilfe};
   var ex=document.createElement('div');ex.className='sbx sbe';
-  ex.innerHTML='<div class="g">Sammlung</div><button data-sb="eck">'+ic.eck+'Eckdaten</button><div class="g">Aufräumen</div><button data-sb="pk">'+ic.aufr+'Papierkorb</button><div class="sp"></div><div class="g">App</div><button data-sb="set">'+ic.set+'Einstellungen</button><button data-sb="hilfe">'+ic.hilfe+'Hilfe</button>';
+  ex.innerHTML='<div class="g">Sammlung</div><button data-sb="eck">'+ic.eck+'Eckdaten</button><div class="g">Aufräumen</div><button data-sb="pk">'+ic.aufr+'Papierkorb</button><button data-sb="dup">'+ICO.dup+'Dubletten</button><div class="sp"></div><div class="g">App</div><button data-sb="set">'+ic.set+'Einstellungen</button><button data-sb="hilfe">'+ic.hilfe+'Hilfe</button>';
   t.appendChild(ex);
  })();
  function macCur(v){[].forEach.call(document.querySelectorAll('#tabs [data-sb]'),function(b){b.classList.toggle('cur',b.getAttribute('data-sb')===v)});[].forEach.call(document.querySelectorAll('#tabs [data-p]'),function(b){b.classList.toggle('dimn',!!v)})}
