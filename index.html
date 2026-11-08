@@ -1594,7 +1594,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
   var ks=[['song','Song'],['album','Album'],['artist','Interpret'],['playlist','Playlist']];
   var rt='<div class="rt">'+ks.map(function(k){return '<button data-px="kind" data-t="'+k[0]+'" class="'+(f.kind===k[0]?'on':'')+'"'+(fixed&&k[0]!==e.kind?' disabled':'')+'>'+k[1]+'</button>'}).join('')+'</div>';
   var body=rt,foot,searching=plain&&f.kind==='song'&&f.phase!=='pick';
-  if(!searching)foot=pxFoot({t:'Später',a:'later'},{t:'Weiter',a:'nweiter',dis:!f.kind});
+  if(!searching)foot=plain?pxFoot({t:'Später',a:'later'}):pxFoot({t:'Später',a:'later'},{t:'Weiter',a:'nweiter',dis:!f.kind});
   else if(f.phase==='search'){body+='<div class="srch"><div class="spn2"></div>Suche online …</div>';foot=pxFoot({t:'Zurück',a:'nback'},{t:'Übernehmen',a:'nok',dis:true})}
   else if(f.phase==='best'){body+=hitBox(f.hits[0],'GEFUNDEN')+(f.hits.length>1?'<button class="tl3" data-px="nalt">Anderer Treffer</button>':'');foot=pxFoot({t:'Später',a:'later'},{t:'Übernehmen',a:'nok'})}
   else if(f.phase==='list'){
@@ -1974,7 +1974,9 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
   if(!cur&&a!=='x')return;
   switch(a){
    case 'pen':sfOpen(cur.key);return;
-   case 'kind':f.kind=el.getAttribute('data-t');render();return;
+   case 'kind':{var kt=el.getAttribute('data-t');
+    if(cur.kind==='song'&&cur.rec.state==='neu'){if(kt==='song'&&f.kind==='song'&&f.phase!=='pick')return;f.kind=kt;pxNoteNext(cur);return}
+    f.kind=kt;render();return}
    case 'nweiter':pxNoteNext(cur);return;
    case 'nback':f.phase='pick';render();return;
    case 'nok':pxHitApply(cur,f.phase==='list'?f.hits[f.hi]:f.hits[0]);return;
