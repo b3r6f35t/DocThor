@@ -923,6 +923,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
 #mnu .dpf button{font-size:15px;color:var(--s);padding:8px 0}
 @media(max-width:999px){#cf.on{z-index:50;box-shadow:0 0 0 200vmax var(--ov)}}
 @media(min-width:1000px){#mnu>.dpc{max-width:596px;margin-left:auto;margin-right:auto}}
+@media(min-width:1000px){#mnu>.ebar{max-width:596px;margin-left:auto;margin-right:auto}}
 </style>
 <div id="hd"><div id="hdr"></div></div>
 <div id="offs" hidden><i></i>Keine Verbindung · Änderungen gesperrt</div>
@@ -1423,7 +1424,8 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
     +'<div class="gl">Darstellung</div><button class="it" data-m="x-dar">'+ICO.dar+'Erscheinungsbild<span class="v">'+MODEN[mode]+' ›</span></button>'+(MS.dar?opts('themes',[['auto','Automatisch'],['light','Hell'],['dark','Dunkel']],mode):'')
     +'<div class="gl">Musik</div><button class="it" data-m="x-svc">'+ICO.svc+'Streaming-Dienst<span class="v">'+SVCN[SVC]+' ›</span></button>'+(MS.svc?opts('svc',[['spotify','Spotify'],['apple','Apple Music'],['ytm','YouTube Music']],SVC):'')
     +'<div class="gl">Daten</div><div class="kvw">Letzte Sicherung<span>'+bks+'</span></div><div class="kvw">Verbindung<span>'+cn+'</span></div>'
-    +(window.DT_HOSTED&&window.DT_API?'<button class="it" data-m="key" style="color:var(--mint)">Schlüssel oder Adresse ändern</button>':'');
+    +(window.DT_HOSTED&&window.DT_API?'<button class="it" data-m="key" style="color:var(--mint)">Schlüssel oder Adresse ändern</button>':'')
+    +'<div class="gl">App</div><button class="it" data-m="reload" style="color:var(--mint)">App aktualisieren</button>'+(window.DT_HOSTED&&DEMO?'<button class="it" data-m="demo-end" style="color:var(--mint)">Demo beenden</button>':'');
   }
   m.innerHTML=h;
  }
@@ -1435,6 +1437,8 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
   var b=e.target.closest('[data-m]');if(!b)return;var m=b.getAttribute('data-m');
   if(m==='tr-r'||m==='tr-e'){trashClick(m,b);return}
   if(m.indexOf('dp-')===0){dupClick(m,b);return}
+  if(m==='demo-end'){location.href=location.pathname;return}
+  if(m==='reload'){var go2=function(){location.reload()};try{Promise.all([window.caches?caches.keys().then(function(k){return Promise.all(k.map(function(x){return caches.delete(x)}))}):0,navigator.serviceWorker?navigator.serviceWorker.getRegistrations().then(function(r){return Promise.all(r.map(function(x){return x.unregister()}))}):0]).then(go2,go2)}catch(e){go2()}return}
   if(m==='set'||m==='eck'||m==='hilfe'||m==='pk'||m==='dup'){MV=m;MS={};mnuPaint();$('mnu').scrollTop=0;return}
   if(m==='h'){var k=b.getAttribute('data-k');MS.h=MS.h===k?null:k;mnuPaint();return}
   if(m==='main'){MV='main';mnuPaint();return}
