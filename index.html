@@ -15,6 +15,8 @@
  window.DT_HOSTED=true;
  var cfg=null;try{cfg=JSON.parse(localStorage.getItem('dt.api')||'null')}catch(e){}
  window.DT_API=(cfg&&cfg.url&&cfg.key)?cfg:null;
+ window.DT_SAVED=!!window.DT_API;
+ if(/[?&]demo=1/.test(location.search)){window.DT_API=null;return}
  function loc(cb){var o={};try{new URLSearchParams(location.search).forEach(function(v,k){o[k]=v})}catch(e){}cb({parameter:o})}
  function call(f,a,ok,fail){
   var ctl=window.AbortController?new AbortController():null,tm=ctl?setTimeout(function(){ctl.abort()},90000):0;
@@ -1175,6 +1177,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  function suOpen(msg,fill){
   var u=$('su-u'),k=$('su-k');
   if(fill&&window.DT_API){u.value=window.DT_API.url;k.value=''}
+  $('su-d').textContent=window.DT_API?'Abbrechen':'Demo ansehen';
   $('su-m').textContent=msg||'';$('su').classList.add('on');suChk();
  }
  function suChk(){$('su-g').disabled=!(/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec\/?$/.test($('su-u').value.trim())&&$('su-k').value.trim().length>=20)}
@@ -1409,7 +1412,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  function mnuPaint(){
   var m=$('mnu'),h='';m.classList.toggle('wide',MV!=='main');
   if(MV==='main'){
-   h='<div class="mh"><b>DocThor</b><small>Version '+VERSION+'</small><button class="mx" id="mx" aria-label="Schließen"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>'
+   h='<div class="mh"><b>DocThor</b><small>Version '+VERSION+(window.DT_HOSTED&&DEMO?' · Demo':'')+'</small><button class="mx" id="mx" aria-label="Schließen"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>'
     +'<div class="gl">Sammlung</div><button class="it" data-m="eck">'+ICO.eck+'Eckdaten</button><div class="gl">Aufräumen</div><button class="it" data-m="pk">'+ICO.aufr+'Papierkorb'+(D.trash.length?'<span class="v">'+D.trash.length+' ›</span>':'')+'</button><button class="it" data-m="dup">'+ICO.dup+'Dubletten'+(dupCount()?'<span class="v">'+dupCount()+' ›</span>':'')+'</button>'
     +'<div class="gl">App</div><button class="it" data-m="set">'+ICO.set+'Einstellungen</button><div class="sp"></div><button class="it" data-m="hilfe">'+ICO.hilfe+'Hilfe</button>';
   }else if(MV==='eck'){h=eckHtml()
@@ -1425,7 +1428,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
     +'<div class="gl">Musik</div><button class="it" data-m="x-svc">'+ICO.svc+'Streaming-Dienst<span class="v">'+SVCN[SVC]+' ›</span></button>'+(MS.svc?opts('svc',[['spotify','Spotify'],['apple','Apple Music'],['ytm','YouTube Music']],SVC):'')
     +'<div class="gl">Daten</div><div class="kvw">Letzte Sicherung<span>'+bks+'</span></div><div class="kvw">Verbindung<span>'+cn+'</span></div>'
     +(window.DT_HOSTED&&window.DT_API?'<button class="it" data-m="key" style="color:var(--mint)">Schlüssel oder Adresse ändern</button>':'')
-    +'<div class="gl">App</div><button class="it" data-m="reload" style="color:var(--mint)">App aktualisieren</button>'+(window.DT_HOSTED&&DEMO?'<button class="it" data-m="demo-end" style="color:var(--mint)">Demo beenden</button>':'');
+    +'<div class="gl">App</div><button class="it" data-m="reload" style="color:var(--mint)">App aktualisieren</button>'+(window.DT_HOSTED?(DEMO?'<button class="it" data-m="to-main" style="color:var(--mint)">'+(window.DT_SAVED?'Zur Hauptapp wechseln':'Mit Sheet verbinden')+'</button><button class="it" data-m="demo-clr" style="color:#b3402f">Demo leeren</button>':'<button class="it" data-m="to-demo" style="color:var(--mint)">Zur Demo wechseln</button>'):'');
   }
   m.innerHTML=h;
  }
@@ -1437,7 +1440,9 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
   var b=e.target.closest('[data-m]');if(!b)return;var m=b.getAttribute('data-m');
   if(m==='tr-r'||m==='tr-e'){trashClick(m,b);return}
   if(m.indexOf('dp-')===0){dupClick(m,b);return}
-  if(m==='demo-end'){location.href=location.pathname;return}
+  if(m==='to-main'){location.href=location.pathname;return}
+  if(m==='to-demo'){location.href=location.pathname+'?demo=1';return}
+  if(m==='demo-clr'){confirm2('Alle Daten der Demo werden gelöscht. Dein echtes Sheet bleibt unberührt.','Ja, leeren',function(){try{localStorage.removeItem('dt.demo')}catch(e){}location.reload()},{danger:true});return}
   if(m==='reload'){var go2=function(){location.reload()};try{Promise.all([window.caches?caches.keys().then(function(k){return Promise.all(k.map(function(x){return caches.delete(x)}))}):0,navigator.serviceWorker?navigator.serviceWorker.getRegistrations().then(function(r){return Promise.all(r.map(function(x){return x.unregister()}))}):0]).then(go2,go2)}catch(e){go2()}return}
   if(m==='set'||m==='eck'||m==='hilfe'||m==='pk'||m==='dup'){MV=m;MS={};mnuPaint();$('mnu').scrollTop=0;return}
   if(m==='h'){var k=b.getAttribute('data-k');MS.h=MS.h===k?null:k;mnuPaint();return}
@@ -3595,7 +3600,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  var MNT={eck:'Eckdaten',set:'Einstellungen',hilfe:'Hilfe',pk:'Papierkorb',dup:'Dubletten'};
  (function(){
   var t=$('tabs');
-  var head=document.createElement('div');head.className='sbx sbh';head.innerHTML='<b>DocThor</b><small>Version '+VERSION+'</small>';
+  var head=document.createElement('div');head.className='sbx sbh';head.innerHTML='<b>DocThor</b><small>Version '+VERSION+(window.DT_HOSTED&&DEMO?' · Demo':'')+'</small>';
   t.insertBefore(head,t.firstChild);
   var ic={eck:ICO.eck,aufr:ICO.aufr,set:ICO.set,hilfe:ICO.hilfe};
   var ex=document.createElement('div');ex.className='sbx sbe';
