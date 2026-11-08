@@ -32,7 +32,7 @@
  }
  function mk(){
   var ok,fail,o={withSuccessHandler:function(f){ok=f;return o},withFailureHandler:function(f){fail=f;return o}};
-  ['getAll','saveOps','getCovers','searchSongs','searchImages','makePlaylistPdf','albumTracks','albumInfo','artistAlbums'].forEach(function(n){
+  ['getAll','saveOps','getCovers','searchSongs','searchImages','makePlaylistPdf','albumTracks','albumInfo','artistAlbums','backupNow'].forEach(function(n){
    o[n]=function(){call(n,Array.prototype.slice.call(arguments),ok,fail)};
   });
   return o;
@@ -1143,6 +1143,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  $('cfn').onclick=close;
  /* ---------- Daten ---------- */
  var DEMO=!(window.google&&google.script&&google.script.run);
+ var BKB=0;
  var D={songs:[],artists:[],albums:[],playlists:[],links:[],trash:[],ign:[]},Q=[],busy=false,READY=false,FAIL=false,META={backup:0},SYNC=0;
  function norm(g){var o={};['songs','artists','albums','playlists','links','trash','ign'].forEach(function(k){o[k]=(g&&g[k])||[]});return o}
  function persist(){LS(DEMO?'dt.demo':'dt.cache',D);if(!DEMO)LS('dt.q',Q)}
@@ -1426,7 +1427,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
    h='<div class="sub"><button class="back" data-m="main">'+ICON_BACK+'Menü</button><h2>Einstellungen</h2></div><div style="border-top:1px solid var(--ln)"></div>'
     +'<div class="gl">Darstellung</div><button class="it" data-m="x-dar">'+ICO.dar+'Erscheinungsbild<span class="v">'+MODEN[mode]+' ›</span></button>'+(MS.dar?opts('themes',[['auto','Automatisch'],['light','Hell'],['dark','Dunkel']],mode):'')
     +'<div class="gl">Musik</div><button class="it" data-m="x-svc">'+ICO.svc+'Streaming-Dienst<span class="v">'+SVCN[SVC]+' ›</span></button>'+(MS.svc?opts('svc',[['spotify','Spotify'],['apple','Apple Music'],['ytm','YouTube Music']],SVC):'')
-    +'<div class="gl">Daten</div><div class="kvw">Letzte Sicherung<span>'+bks+'</span></div><div class="kvw">Verbindung<span>'+cn+'</span></div>'
+    +'<div class="gl">Daten</div><div class="kvw">Letzte Sicherung<span>'+bks+'</span></div><div class="kvw">Verbindung<span>'+cn+'</span></div>'+(DEMO?'':'<button class="it" data-m="bk-now" style="color:var(--mint)">'+(BKB?'Sichere …':'Jetzt sichern')+'</button>')
     +(window.DT_HOSTED&&window.DT_API?'<button class="it" data-m="key" style="color:var(--mint)">Schlüssel oder Adresse ändern</button>':'')
     +'<div class="gl">App</div><button class="it" data-m="reload" style="color:var(--mint)">App aktualisieren</button>'+(window.DT_HOSTED?(DEMO?'<button class="it" data-m="to-main" style="color:var(--mint)">'+(window.DT_SAVED?'Zur Hauptapp wechseln':'Mit Sheet verbinden')+'</button><button class="it" data-m="demo-clr" style="color:#b3402f">Demo leeren</button>':'<button class="it" data-m="to-demo" style="color:var(--mint)">Zur Demo wechseln</button>'):'');
   }
@@ -1440,6 +1441,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
   var b=e.target.closest('[data-m]');if(!b)return;var m=b.getAttribute('data-m');
   if(m==='tr-r'||m==='tr-e'){trashClick(m,b);return}
   if(m.indexOf('dp-')===0){dupClick(m,b);return}
+  if(m==='bk-now'){if(BKB)return;BKB=1;mnuPaint();google.script.run.withSuccessHandler(function(ts){BKB=0;if(ts)META.backup=Number(ts);mnuPaint();snack('Gesichert · in Drive unter „DocThor Sicherungen“')}).withFailureHandler(function(){BKB=0;mnuPaint();snack('Sicherung fehlgeschlagen. Ist Code.gs neu bereitgestellt?')}).backupNow();return}
   if(m==='to-main'){location.href=location.pathname;return}
   if(m==='to-demo'){location.href=location.pathname+'?demo=1';return}
   if(m==='demo-clr'){confirm2('Alle Daten der Demo werden gelöscht. Dein echtes Sheet bleibt unberührt.','Ja, leeren',function(){try{localStorage.removeItem('dt.demo')}catch(e){}location.reload()},{danger:true});return}
