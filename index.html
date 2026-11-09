@@ -930,7 +930,8 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
 @media(max-width:999px){
 #p-in.tab-queue #pult,#p-in.tab-park #pult{display:none}
 #p-in:not(.tab-queue):not(.tab-park) #list{display:none}
-.ptabs{margin:8px 0 10px}.ptabs button{font-size:12px;padding:7px 0;white-space:nowrap}
+#qh:has(.ptabs){position:sticky;top:calc(env(safe-area-inset-top) + 52px);z-index:7;background:var(--bg);margin:0 -18px 6px;padding:6px 18px 4px}
+.ptabs{margin:0}.ptabs button{font-size:12px;padding:7px 0;white-space:nowrap}
 .ptabs i{font-style:normal;font-weight:500;margin-left:4px;color:var(--s)}.ptabs .on i{color:var(--tx)}
 .qe{text-align:center;color:var(--s);padding:40px 0;font-size:14px}
 #p-in.tab-queue .qh,#p-in.tab-park .qh{display:none}
