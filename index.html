@@ -988,8 +988,8 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
 
 <div class="sheet" id="mk" role="dialog" aria-label="Notiz">
  <div class="t"><button class="cn" id="mkc">Abbrechen</button><b>Neue Notiz</b><button class="go" id="mkg" disabled>Sichern</button></div>
- <div class="fld"><textarea id="mt" rows="4" placeholder="Notiz eingeben …" autocomplete="off" autocapitalize="sentences"></textarea></div>
- 
+ <div class="seg" id="mkm"><button data-mm="one" class="on">Einzeln</button><button data-mm="many">Mehrere</button></div>
+ <div class="fld"><textarea id="mt" rows="2" placeholder="Notiz eingeben …" autocomplete="off" autocapitalize="sentences" enterkeyhint="done"></textarea></div>
 </div>
 
 <div class="sheet" id="sf" role="dialog" aria-label="Bearbeiten">
@@ -2116,19 +2116,31 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  };
  $('sfd').onclick=function(){var k=SF;close();setTimeout(function(){askDelete(k)},280)};
  /* ---------- Notiz-Fenster ---------- */
- var NZ=0,NZK='';
+ var NZ=0,NZK='',NZM='one';
+ function mkMode(m){
+  NZM=m;var t=$('mt');
+  [].forEach.call(document.querySelectorAll('#mkm button'),function(b){b.classList.toggle('on',b.getAttribute('data-mm')===m)});
+  t.rows=m==='many'?5:2;t.placeholder=m==='many'?'Eine Notiz pro Zeile …':'Notiz eingeben …';t.setAttribute('enterkeyhint',m==='many'?'enter':'done');
+  if(m==='one')t.value=t.value.replace(/\s*\n+\s*/g,' ');
+  mkChk();
+ }
  function notizOpen(txt,kind){
   PULT.tab='pult';
   if(OFFL){snack('Keine Verbindung · Änderungen gesperrt');return}
-  NZK=kind||'';$('mt').value=txt||'';NZ=0;$('mkc').textContent='Abbrechen';mkChk();open('mk');setTimeout(function(){$('mt').focus()},320);
+  NZK=kind||'';$('mt').value=txt||'';NZ=0;$('mkc').textContent='Abbrechen';mkMode(/\n/.test(txt||'')?'many':'one');open('mk');setTimeout(function(){$('mt').focus()},320);
  }
- function mkChk(){$('mkg').disabled=!$('mt').value.trim()}
- $('mt').addEventListener('input',mkChk);
- $('mt').addEventListener('keydown',function(e){if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){e.preventDefault();notizSichern()}});
+ function mkLines(){return $('mt').value.split(/\n+/).map(function(x){return x.replace(/\s+/g,' ').trim()}).filter(Boolean)}
+ function mkChk(){var n=mkLines().length;$('mkg').disabled=!n;$('mkg').textContent=NZM==='many'&&n>1?n+' sichern':'Sichern'}
+ $('mt').addEventListener('input',function(){if(NZM==='one'&&/\n/.test($('mt').value.replace(/\n+$/,'')))mkMode('many');mkChk()});
+ $('mt').addEventListener('keydown',function(e){
+  if(e.key!=='Enter'||e.isComposing)return;
+  if(e.metaKey||e.ctrlKey||(NZM==='one'&&!e.shiftKey)){e.preventDefault();notizSichern()}
+ });
+ $('mkm').addEventListener('click',function(e){var b=e.target.closest('button[data-mm]');if(!b)return;mkMode(b.getAttribute('data-mm'));$('mt').focus()});
  function notizSichern(){
-  var ls=$('mt').value.split(/\n+/).map(function(x){return x.replace(/\s+/g,' ').trim()}).filter(Boolean);if(!ls.length)return;
+  var ls=mkLines();if(!ls.length)return;
   ls.forEach(function(t,i){var r=newSongRec({title:t,state:'neu'});r.created+=i;r.since=r.created;if(NZK)preSet(r,'kind',NZK);put('songs',r)});
-  NZ+=ls.length;$('mt').value='';mkChk();$('mkc').textContent='Fertig';snack(ls.length>1?ls.length+' Notizen gesichert':'Notiz gesichert');
+  $('mt').value='';mkChk();close();snack(ls.length>1?ls.length+' Notizen gesichert':'Notiz gesichert');
   render();
  }
  $('mkc').onclick=close;$('mkg').onclick=notizSichern;
@@ -3478,7 +3490,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
    ['Eckdaten verstehen','Im Menü findest du die Eckdaten: Zahlen zu deiner Sammlung, dem Fortschritt, der Spielzeit und deiner Aktivität. Sie sind nur zum Anschauen, du kannst dort nichts ändern.']
   ]],
   ['Tipps',[
-   ['Kleine Abkürzungen','Tipp auf **DocThor** bringt dich zum Mischpult. Tipp auf die **Überschrift** scrollt nach oben. Am Mischpult holt ein Tipp auf eine Zeile den Eintrag ins Pult, ein langer Druck öffnet seine Karte. In der Mediathek hat ein langer Druck keine Funktion. In einer Notiz speichert Cmd/Strg + Enter.'],
+   ['Kleine Abkürzungen','Tipp auf **DocThor** bringt dich zum Mischpult. Tipp auf die **Überschrift** scrollt nach oben. Am Mischpult holt ein Tipp auf eine Zeile den Eintrag ins Pult, ein langer Druck öffnet seine Karte. In der Mediathek hat ein langer Druck keine Funktion. In einer Notiz speichert Enter. Im Modus „Mehrere“ (eine Zeile pro Eintrag) speichert Cmd/Strg + Enter.'],
    ['Später: warum steht das dort?','Unter „Später“ stehen Einträge, die gerade nicht dran sind: Merkliste-Songs bis zu ihrem Termin und alles, was du mit „Später“ zur Seite gelegt hast. Die Zeile ist grau und hat eine Uhr mit dem Datum. Ein Tipp holt den Eintrag trotzdem sofort ins Pult.'],
    ['Lange Titel und Lauftext','Passt ein Titel nicht in die Zeile, läuft er langsam nach links und bleibt am Ende kurz stehen. Hast du auf dem iPhone „Bewegung reduzieren“ an, steht stattdessen eine Abkürzung mit „…“.'],
    ['Darstellung und Meldungen','Unter Menü › Einstellungen wählst du **Automatisch** (folgt deinem iPhone), **Hell** oder **Dunkel**. Meldungen erscheinen unten als dunkle Pille: Mit „Rückgängig“ holst du die letzte Änderung zurück (ca. 6 Sekunden), eine rote Meldung heißt, dass etwas nicht geklappt hat. Dann tippst du „Nochmal versuchen“.'],
