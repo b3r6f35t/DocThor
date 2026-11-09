@@ -926,14 +926,23 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
 @media(max-width:999px){#cf.on{z-index:50;box-shadow:0 0 0 200vmax var(--ov)}}
 @media(min-width:1000px){#mnu>.dpc{max-width:596px;margin-left:auto;margin-right:auto}}
 @media(min-width:1000px){#mnu>.ebar{max-width:596px;margin-left:auto;margin-right:auto}}
+
+@media(max-width:999px){
+#p-in.tab-queue #pult,#p-in.tab-park #pult{display:none}
+#p-in:not(.tab-queue):not(.tab-park) #list{display:none}
+.ptabs{margin:8px 0 10px}.ptabs button{font-size:12px;padding:7px 0;white-space:nowrap}
+.ptabs i{font-style:normal;font-weight:500;margin-left:4px;color:var(--s)}.ptabs .on i{color:var(--tx)}
+.qe{text-align:center;color:var(--s);padding:40px 0;font-size:14px}
+#p-in.tab-queue .qh,#p-in.tab-park .qh{display:none}
+}
 </style>
 <div id="hd"><div id="hdr"></div></div>
 <div id="offs" hidden><i></i>Keine Verbindung · Änderungen gesperrt</div>
 <div id="app">
  <div id="scr">
   <section class="page on" id="p-in">
-   <div id="pult"></div>
    <div id="qh"></div>
+   <div id="pult"></div>
    <div id="list"></div>
   </section>
   <section class="page" id="p-me">
@@ -1459,7 +1468,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  $('mnu').addEventListener('touchend',function(e){if(mx0!==null&&e.changedTouches[0].clientX-mx0<-60)mnuClose();mx0=null},{passive:true});
 
  /* ---------- Mischpult (V32): Pult mit Schritt-Karten, Statusleiste und Zwischenkarten ---------- */
- var PULT={key:null,st:null,avoid:null,after:null,flash:null,force:false,pl:null,ft:0},ECK=false,FLT='alle',FMENU=false;
+ var PULT={tab:'pult',key:null,st:null,avoid:null,after:null,flash:null,force:false,pl:null,ft:0},ECK=false,FLT='alle',FMENU=false;
  var PX={inter:null,f:null,edit:null,cur:null,fo:false,undo:null,lp:0};
  var KW={song:'Song',album:'Album',artist:'Interpret',playlist:'Playlist'};
  var BARN={song:9,album:6,artist:3,playlist:3};
@@ -1744,9 +1753,19 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
   return '<div class="qr'+(park?' park':'')+'" data-k="'+e.key+'"><div class="qm"><b>'+esc(titleOf(e))+'</b>'+(sub?'<div class="s">'+esc(sub)+'</div>':'')+'</div><div class="qs">'+right+'</div></div>';
  }
  function renderQueue(ents){
-  var rest=ents.filter(function(e){return e.key!==PULT.key||(PX.inter&&false)}),act=rest.filter(function(e){return !pxParked(e)}).sort(byQueue),park=rest.filter(pxParked).sort(function(a,b){return pxWhen(a)-pxWhen(b)}),h='';
-  if(act.length)h+='<div class="qh"><span>Warteschlange · '+act.length+'</span>'+(park.length?'<button class="pill" data-px="jmpP">'+ICON_CLOCK+'Zurückgestellt · '+park.length+' ↓</button>':'')+'</div><div class="card qc">'+act.map(function(e){return qrow(e,false)}).join('')+'</div>';
-  if(park.length)h+='<div class="qh" id="parkh"><span>Zurückgestellt · '+park.length+'</span>'+(act.length?'<button class="pill" data-px="jmpQ">Warteschlange · '+act.length+' ↑</button>':'')+'</div><div class="card qc pk">'+park.map(function(e){return qrow(e,true)}).join('')+'</div>';
+  var rest=ents.filter(function(e){return e.key!==PULT.key||(PX.inter&&false)}),act=rest.filter(function(e){return !pxParked(e)}).sort(byQueue),park=rest.filter(pxParked).sort(function(a,b){return pxWhen(a)-pxWhen(b)}),h='',tabs=!MACW(),pg=$('p-in');
+  if(tabs){
+   var tb=PULT.tab;if(tb==='queue'&&!act.length&&park.length&&false)tb='pult';
+   pg.className=pg.className.replace(/ ?tab-\w+/g,'')+' tab-'+tb;
+   var T=[['pult','Mischpult',0],['queue','Offen',act.length],['park','Später',park.length]];
+   $('qh').innerHTML='<div class="seg ptabs">'+T.map(function(t){return '<button data-px="tab" data-t="'+t[0]+'" class="'+(tb===t[0]?'on':'')+'">'+t[1]+(t[2]?'<i>'+t[2]+'</i>':'')+'</button>'}).join('')+'</div>';
+   if(tb==='queue')h=act.length?'<div class="card qc">'+act.map(function(e){return qrow(e,false)}).join('')+'</div>':'<div class="qe">Nichts offen</div>';
+   else if(tb==='park')h=park.length?'<div class="card qc pk">'+park.map(function(e){return qrow(e,true)}).join('')+'</div>':'<div class="qe">Nichts auf Später</div>';
+   $('list').innerHTML=h;return;
+  }
+  pg.className=pg.className.replace(/ ?tab-\w+/g,'');$('qh').innerHTML='';
+  if(act.length)h+='<div class="qh"><span>Offen · '+act.length+'</span>'+(park.length?'<button class="pill" data-px="jmpP">'+ICON_CLOCK+'Später · '+park.length+' ↓</button>':'')+'</div><div class="card qc">'+act.map(function(e){return qrow(e,false)}).join('')+'</div>';
+  if(park.length)h+='<div class="qh" id="parkh"><span>Später · '+park.length+'</span>'+(act.length?'<button class="pill" data-px="jmpQ">Offen · '+act.length+' ↑</button>':'')+'</div><div class="card qc pk">'+park.map(function(e){return qrow(e,true)}).join('')+'</div>';
   $('list').innerHTML=h;
  }
  function pxMarquee(){
@@ -1818,7 +1837,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  function pxLaterE(e){
   var old=cp(e.rec),r=cp(e.rec),c=cOf(e.kind);r.skip=Date.now();put(c,r);
   PX.inter=null;PX.f=null;PX.edit=null;PULT.avoid=e.key;PULT.key=null;
-  snack('Zurückgestellt für 7 Tage','Rückgängig',function(){put(c,old);PULT.key=e.key;PULT.force=true;PX.f=null;render()});
+  snack('Auf „Später“ gelegt · 7 Tage','Rückgängig',function(){put(c,old);PULT.key=e.key;PULT.force=true;PX.f=null;render()});
   render();
  }
  function pxNext(e){
@@ -1970,7 +1989,8 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
    if(tgt){var top=$('pult').getBoundingClientRect().bottom;window.scrollTo({top:Math.max(0,window.scrollY+tgt.getBoundingClientRect().top-top-6),behavior:'smooth'})}else window.scrollTo({top:0,behavior:'smooth'});
    return;
   }
-  if(a==='newnote'){notizOpen('');return}
+  if(a==='tab'){PULT.tab=el.getAttribute('data-t');render();window.scrollTo({top:0});return}
+  if(a==='newnote'){PULT.tab='pult';notizOpen('');return}
   if(!cur&&a!=='x')return;
   switch(a){
    case 'pen':sfOpen(cur.key);return;
@@ -2013,7 +2033,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  /* Zeilen der Warteschlange: Tipp holt ins Pult, langer Druck öffnet die Karte */
  function qBring(key){
   var e=entryOf(key);if(!e)return;
-  PULT.key=key;PULT.force=true;PULT.avoid=null;PX.inter=null;PX.f=null;PX.edit=null;render();window.scrollTo({top:0,behavior:'smooth'});
+  PULT.tab='pult';PULT.key=key;PULT.force=true;PULT.avoid=null;PX.inter=null;PX.f=null;PX.edit=null;render();window.scrollTo({top:0,behavior:'smooth'});
  }
  function qOpen(key){
   var e=entryOf(key);if(!e)return;
@@ -2097,6 +2117,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  /* ---------- Notiz-Fenster ---------- */
  var NZ=0,NZK='';
  function notizOpen(txt,kind){
+  PULT.tab='pult';
   if(OFFL){snack('Keine Verbindung · Änderungen gesperrt');return}
   NZK=kind||'';$('mt').value=txt||'';NZ=0;$('mkc').textContent='Abbrechen';mkChk();open('mk');setTimeout(function(){$('mt').focus()},320);
  }
@@ -3434,13 +3455,13 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
   ['Erste Schritte',[
    ['Was ist DocThor?','DocThor ist dein Notizbuch für Musik. Du hältst fest, was du hörst oder hören willst, und DocThor führt dich Schritt für Schritt, bis aus der Notiz ein vollständiger Song in deiner Sammlung geworden ist. Alles liegt in deinem eigenen Google Sheet.'],
    ['So läuft ein Song','1. **Notiz:** Du schreibst nur auf, was dir einfällt, zum Beispiel „Hotel California“.\n2. **Entwurf:** Du bestätigst Interpret, Album, Titelnummer, Dauer, Feat. und Bemerkung. Vieles findet DocThor online für dich.\n3. **Checkliste:** Du suchst den Song in deinem Streaming-Dienst und legst ihn in Playlists.\n4. **Abgeschlossen:** Der Song liegt fertig in der Mediathek.\nFindest du den Song im Streaming-Dienst nicht, geht er auf die Merkliste und kommt später wieder.'],
-   ['Das Mischpult und das Pult','Das Mischpult ist deine Arbeitsseite. Oben liegt das **Pult**, die dunkelgrüne Karte: Dort arbeitest du immer an einem Eintrag. Darunter steht die **Warteschlange**, die ältesten Einträge zuerst. Tippst du auf eine Zeile, kommt sie ins Pult. Ein langer Druck öffnet ihre Karte.']
+   ['Das Mischpult und das Pult','Das Mischpult ist deine Arbeitsseite. Oben liegt das **Pult**, die dunkelgrüne Karte: Dort arbeitest du immer an einem Eintrag. Darauf folgen zwei Reiter: **Offen** zeigt, was als Nächstes dran ist (die ältesten Einträge zuerst), **Später** zeigt, was gerade wartet. Tippst du auf eine Zeile, kommt sie ins Pult. Ein langer Druck öffnet ihre Karte.']
   ]],
   ['Songs, Alben, Interpreten, Playlists',[
    ['Notiz, Entwurf, abgeschlossen','Eine **Notiz** ist nur ein Name. Ein **Entwurf** hat schon eine Art (Song, Album, Interpret oder Playlist), aber noch nicht alle Angaben. **Abgeschlossen** heißt: Alles ist bestätigt, der Eintrag hat keinen Punkt mehr. Die Farbe des Punkts zeigt, wo ein Eintrag steht: grau Notiz, orange Entwurf, gelb Checkliste, blau Merkliste.'],
    ['Die Checkliste','Die Checkliste hat zwei Schritte. Zuerst **Song suchen**: Das öffnet deinen Streaming-Dienst. Findest du den Song, tippst du „Gefunden“, sonst „Nicht gefunden“. Dann wählst du **Playlists** für den Song oder „Ohne Playlist“.'],
-   ['Merkliste und „Gefunden“','Hast du einen Song im Streaming-Dienst nicht gefunden, geht er auf die Merkliste. Nach 28 Tagen kommt er wieder ans Pult. Dann suchst du noch einmal: „Gefunden“ bringt dich zurück zur Checkliste, „Noch nicht“ startet weitere 28 Tage. Bis dahin steht er unter „Zurückgestellt“.'],
-   ['Später und Nächster Beitrag','**Später** legt einen Eintrag für 7 Tage zur Seite. **Nächster Beitrag** stellt ihn ans Ende der Warteschlange, ganz ohne Pause: Du machst zuerst mit den anderen weiter.'],
+   ['Merkliste und „Gefunden“','Hast du einen Song im Streaming-Dienst nicht gefunden, geht er auf die Merkliste. Nach 28 Tagen kommt er wieder ans Pult. Dann suchst du noch einmal: „Gefunden“ bringt dich zurück zur Checkliste, „Noch nicht“ startet weitere 28 Tage. Bis dahin steht er unter „Später“.'],
+   ['Später und Nächster Beitrag','**Später** legt einen Eintrag für 7 Tage zur Seite. **Nächster Beitrag** stellt ihn ans Ende von „Offen“, ganz ohne Pause: Du machst zuerst mit den anderen weiter.'],
    ['Papierkorb','Wenn du einen Song, ein Album, einen Interpreten oder eine Playlist löschst, landet er im **Papierkorb**. Du findest ihn im Menü unter **Aufräumen**. Dort holst du Gelöschtes mit **Zurückholen** wieder, samt Songs und Playlists. Nach **30 Tagen** wird es endgültig gelöscht. Mit **Papierkorb leeren** geht es sofort.'],
    ['Dubletten','Unter **Aufräumen › Dubletten** zeigt DocThor Einträge, die doppelt aussehen: gleicher Titel beim gleichen Interpreten, bei Interpreten und Playlists ein fast gleicher Name. Du siehst immer ein Paar. Mit **Den behalten** bestimmst du, welcher bleibt. Der andere wird vereint (seine Playlists und Songs gehen auf den behaltenen über) und kommt in den Papierkorb. **Keine Dublette** merkt sich das Paar, **Später** zeigt es erst beim nächsten Mal wieder.'],
    ['Album heißt jede Veröffentlichung','In DocThor ist „Album“ der Sammelname für alles, was jemand veröffentlicht. Beim Anlegen wählst du den Typ: **Album, EP, Single, Live oder Sonstige**. Sampler, Soundtracks und Compilations gehören zu „Sonstige“. Eine einzelne Single trägst du als Album mit dem Songtitel ein.'],
@@ -3457,7 +3478,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
   ]],
   ['Tipps',[
    ['Kleine Abkürzungen','Tipp auf **DocThor** bringt dich zum Mischpult. Tipp auf die **Überschrift** scrollt nach oben. Am Mischpult holt ein Tipp auf eine Zeile den Eintrag ins Pult, ein langer Druck öffnet seine Karte. In der Mediathek hat ein langer Druck keine Funktion. In einer Notiz speichert Cmd/Strg + Enter.'],
-   ['Zurückgestellt: warum steht das dort?','Unter „Zurückgestellt“ stehen Einträge, die gerade nicht dran sind: Merkliste-Songs bis zu ihrem Termin und alles, was du mit „Später“ zur Seite gelegt hast. Die Zeile ist grau und hat eine Uhr mit dem Datum. Ein Tipp holt den Eintrag trotzdem sofort ins Pult.'],
+   ['Später: warum steht das dort?','Unter „Später“ stehen Einträge, die gerade nicht dran sind: Merkliste-Songs bis zu ihrem Termin und alles, was du mit „Später“ zur Seite gelegt hast. Die Zeile ist grau und hat eine Uhr mit dem Datum. Ein Tipp holt den Eintrag trotzdem sofort ins Pult.'],
    ['Lange Titel und Lauftext','Passt ein Titel nicht in die Zeile, läuft er langsam nach links und bleibt am Ende kurz stehen. Hast du auf dem iPhone „Bewegung reduzieren“ an, steht stattdessen eine Abkürzung mit „…“.'],
    ['Darstellung und Meldungen','Unter Menü › Einstellungen wählst du **Automatisch** (folgt deinem iPhone), **Hell** oder **Dunkel**. Meldungen erscheinen unten als dunkle Pille: Mit „Rückgängig“ holst du die letzte Änderung zurück (ca. 6 Sekunden), eine rote Meldung heißt, dass etwas nicht geklappt hat. Dann tippst du „Nochmal versuchen“.'],
    ['Auf dem Homescreen nutzen','Öffne DocThor in Safari, tippe auf das Teilen-Symbol und wähle „Zum Home-Bildschirm“. Danach startet DocThor wie eine normale App.'],
