@@ -32,7 +32,7 @@
  }
  function mk(){
   var ok,fail,o={withSuccessHandler:function(f){ok=f;return o},withFailureHandler:function(f){fail=f;return o}};
-  ['getAll','saveOps','getCovers','searchSongs','searchImages','makePlaylistPdf','albumTracks','albumInfo','artistAlbums','backupNow'].forEach(function(n){
+  ['getAll','saveOps','getCovers','searchSongs','searchImages','makePlaylistPdf','albumTracks','albumInfo','artistAlbums','searchAlbums','searchArtists','backupNow'].forEach(function(n){
    o[n]=function(){call(n,Array.prototype.slice.call(arguments),ok,fail)};
   });
   return o;
@@ -951,6 +951,8 @@ body.pfix #pult .px .bd3{min-height:0;overflow-y:auto;overscroll-behavior:contai
 body.pfix #pult .px>*{flex-shrink:0}body.pfix #pult .px>.bd3{flex-shrink:1}
 body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
 }
+
+.own{font-size:12.5px;color:#9fd8ab;font-weight:600;margin:8px 2px 0}
 </style>
 <div id="hd"><div id="hdr"></div></div>
 <div id="offs" hidden><i></i>Keine Verbindung · Änderungen gesperrt</div>
@@ -1560,7 +1562,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   PULT.avoid=null;PULT.key=cur?cur.key:null;return cur;
  }
  function pxInit(e,step){
-  var r=e.rec,M=maps(),f={step:step,val:'',touched:false,sel:'',kind:'',phase:'pick',img:'',type:'',choice:'',guests:[],add:false,pls:{},plq:'',newpl:false,hi:0,hits:null,single:false,sugOpen:false,msg:''};
+  var r=e.rec,M=maps(),f={step:step,val:'',touched:false,sel:'',kind:'',phase:'pick',rs:{},img:'',type:'',choice:'',guests:[],add:false,pls:{},plq:'',newpl:false,hi:0,hits:null,single:false,sugOpen:false,msg:''};
   if(step==='notiz'){f.kind=e.kind!=='song'?e.kind:(r.state==='neu'?preGet(r,'kind'):'song')}
   else if(step==='artist'){f.val=r.artist&&M.a[r.artist]?M.a[r.artist].name:'';f.sel=r.artist||''}
   else if(step==='album'){f.val=r.album&&M.al[r.album]?M.al[r.album].title:'';f.sel=r.album||''}
@@ -1610,25 +1612,29 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
    return '<button class="sg3" data-px="sug" data-i="'+i+'">'+lead+'<span class="n">'+esc(x.t)+'<small>'+esc(x.s)+'</small></span></button>';
   }).join('')+'</div>';
  }
- function hitBox(b,lab){
-  var c=b.c&&isImg(b.c)?b.c:'';
-  return '<div class="nf3">'+'<div class="cv4'+(c?' ci':'')+'"'+covStyle(c)+'>'+(c?'':ICON_NOTE)+'</div><div class="mm"><div class="nl">'+lab+'</div>'+mqh(esc(b.t),'tt2')+mqh(esc(hitLine(b)),'ts2')+'</div></div>';
+ function hitBox(b,lab,kind){
+  var c=b.c&&isImg(b.c)?b.c:'',ic=kind==='album'?ICON_DISC:ICON_NOTE;
+  return '<div class="nf3">'+'<div class="cv4'+(kind==='artist'?' rd':'')+(c?' ci':'')+'"'+covStyle(c)+'>'+(c?'':ic)+'</div><div class="mm"><div class="nl">'+lab+'</div>'+mqh(esc(b.t),'tt2')+mqh(esc(hitLineK(b,kind||'song')),'ts2')+'</div></div>'+ownHint(b,kind||'song');
  }
  function pxNotiz(e,f){
   var r=e.rec,plain=(e.kind==='song'&&r.state==='neu'),fixed=!plain;
   var ks=[['song','Song'],['album','Album'],['artist','Interpret'],['playlist','Playlist']];
   var rt='<div class="rt">'+ks.map(function(k){return '<button data-px="kind" data-t="'+k[0]+'" class="'+(f.kind===k[0]?'on':'')+'"'+(fixed&&k[0]!==e.kind?' disabled':'')+'>'+k[1]+'</button>'}).join('')+'</div>';
-  var body=rt,foot,searching=plain&&f.kind==='song'&&f.phase!=='pick';
-  if(!searching)foot=plain?pxFoot(null,null,{t:'Später',a:'later'}):pxFoot({t:'Später',a:'later'},{t:'Weiter',a:'nweiter',dis:!f.kind});
-  else if(f.phase==='search'){body+='<div class="srch"><div class="spn2"></div>Suche online …</div>';foot=pxFoot({t:'Zurück',a:'nback'},{t:'Übernehmen',a:'nok',dis:true})}
-  else if(f.phase==='best'){body+=hitBox(f.hits[0],'GEFUNDEN')+(f.hits.length>1?'<button class="tl3" data-px="nalt">Anderer Treffer</button>':'');foot=pxFoot({t:'Später',a:'later'},{t:'Übernehmen',a:'nok'})}
+  var body=rt,foot,K=f.kind,searching=plain&&K&&f.phase!=='pick',L={t:'Später',a:'later'};
+  if(!searching)foot=plain?pxFoot(null,null,L):pxFoot(L,{t:'Weiter',a:'nweiter',dis:!f.kind});
+  else if(f.phase==='search'){body+='<div class="srch"><div class="spn2"></div>Suche online …</div>';foot=pxFoot(L,{t:'Übernehmen',a:'nok',dis:true})}
+  else if(f.phase==='pl'){
+   var sim=f.hits||[];
+   body+=sim.length?sim.map(function(p,i){return '<div class="nf3"><div class="cv4">'+ICON_NOTE+'</div><div class="mm"><div class="nl">'+(i?'':'SCHON VORHANDEN?')+'</div>'+mqh(esc(p.name),'tt2')+mqh(esc(plural(D.links.filter(function(l){return l.playlist===p.id}).length,'Song','Songs')),'ts2')+'</div></div>'}).join(''):'<div class="none">Keine ähnliche Playlist vorhanden</div>';
+   foot=pxFoot(L,{t:'Anlegen',a:'nself'})}
+  else if(f.phase==='best'){body+=hitBox(f.hits[0],K==='song'?'GEFUNDEN':'BESTER TREFFER',K)+(f.hits.length>1?'<button class="tl3" data-px="nalt">Anderer Treffer</button>':'');foot=pxFoot(L,{t:'Übernehmen',a:'nok'})}
   else if(f.phase==='list'){
    var n=Math.min(8,f.hits.length);
-   if(f.hi<n){body+=hitBox(f.hits[f.hi],'TREFFER '+(f.hi+1)+' VON '+n);foot=pxFoot({t:'Zurück',a:'nback'},{t:'Übernehmen',a:'nok'})}
+   if(f.hi<n){body+=hitBox(f.hits[f.hi],'TREFFER '+(f.hi+1)+' VON '+n,K);foot=pxFoot({t:'Zurück',a:'nback'},{t:'Übernehmen',a:'nok'})}
    else{body+='<div class="nf3 none2"><div class="mm"><div class="nl">NICHTS DABEI?</div></div></div>';foot=pxFoot({t:'Zurück',a:'nback'},{t:'Selbst eintragen',a:'nself'})}
    var dots='';for(var i=0;i<=n;i++)dots+='<i class="'+(i===f.hi?'on':'')+'"></i>';
    body+='<div class="cs3"><button data-px="hprev"'+(f.hi<=0?' disabled':'')+'>‹</button><div class="dots">'+dots+'</div><button data-px="hnext"'+(f.hi>=n?' disabled':'')+'>›</button></div>';
-  }else{body+='<div class="none">Online nichts gefunden</div><button class="tl3" data-px="nagain">Nochmal suchen</button>';foot=pxFoot({t:'Zurück',a:'nback'},{t:'Selbst eintragen',a:'nself'})}
+  }else{body+='<div class="none">'+(f.msg&&f.msg.indexOf('zu kurz')>=0?esc(f.msg):'Online nichts gefunden')+'</div><button class="tl3" data-px="nagain">Nochmal suchen</button>';foot=pxFoot(L,{t:'Selbst eintragen',a:'nself'})}
   return {h:body,f:foot};
  }
  /* Schritt-Karten */
@@ -1721,6 +1727,17 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
    s+=(h.y||2100)/1000;return s}
   return hits.slice().sort(function(a,b){return sc(a)-sc(b)});
  }
+ function hitLineK(h,kind){
+  if(kind==='album')return [h.a,[h.ty,h.y].filter(Boolean).join(' '),h.tc?h.tc+' Titel':''].filter(Boolean).join(' · ');
+  if(kind==='artist')return h.g||'';
+  return hitLine(h);
+ }
+ function ownHint(h,kind){
+  var ex=false;
+  if(kind==='artist')ex=!!findArtist(h.t);
+  else if(kind==='album'){var ar=findArtist(h.a);ex=!!(ar&&findAlbum(h.t,ar.id))}
+  return ex?'<div class="own">Schon in deiner Mediathek</div>':'';
+ }
  function hitLine(h){return [h.a,(h.al||'')+(h.y?' ('+h.y+')':''),h.d?fmtDur(h.d):''].filter(Boolean).join(' · ')}
  /* ---------- Rendern ---------- */
  var STW={neu:'Notiz',entwurf:'Entwurf',checkliste:'Checkliste',merkliste:'Merkliste'};
@@ -1743,6 +1760,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   var I=PX.inter&&PX.inter.key===cur.key?PX.inter:null,step=stepOf(cur),sig=cur.key+'|'+(I?'i'+I.type:step)+'|'+(PX.edit?'e':'');
   if(!PX.f||PX.f.sig!==sig){PX.f=pxInit(cur,step);PX.f.sig=sig}
   var f=PX.f,html;
+  if(step==='notiz'&&cur.kind==='song'&&cur.rec.state==='neu'&&f.kind&&f.phase==='pick'){f.phase='search';setTimeout(function(){if(PX.f===f)pxSearchK(cur,f.kind)},0)}
   if(I){var x=pxInter(cur,I);html='<div class="px">'+x.head+x.bar+'<div class="bd3">'+x.h+'</div>'+x.f+'</div>'}
   else{
    var b=step==='notiz'?pxNotiz(cur,f):(step==='such'||step==='msuch'||step==='plist')?pxCheck(cur,step,f):pxStep(cur,step,f);
@@ -1935,15 +1953,60 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   PX.undo=function(){del(c,nr.id);put('songs',old)};
   PULT.key=key;PULT.force=true;pxAfter(key,'neu');
  }
- function pxSearch(e){
-  var f=PX.f,q=noteQuery(e.rec.title);f.phase='search';f.hits=null;f.hi=0;
-  if((q.t+q.a).length<2){f.phase='none';f.msg='Der Titel ist zu kurz für die Suche.';return}
-  onlineSongs((q.t+' '+q.a).trim(),function(r,err){
+ function pxSimilarPl(t){
+  var k=dkey(t);if(!k)return [];
+  return D.playlists.filter(function(p){var n=dkey(p.name);return n&&(n===k||(k.length>=4&&n.length>=4&&(n.indexOf(k)>=0||k.indexOf(n)>=0)))}).slice(0,3);
+ }
+ function pxSearch(e){pxSearchK(e,'song')}
+ function pxSearchK(e,kind){
+  var f=PX.f,q=noteQuery(e.rec.title);
+  function put2(o){f.rs[kind]=o;if(f.kind===kind){f.phase=o.phase;f.hits=o.hits;f.hi=o.hi;f.msg=o.msg||'';render()}}
+  if(f.kind===kind){f.phase='search';f.hits=null;f.hi=0;f.msg=''}
+  if(kind==='playlist'){var sim=pxSimilarPl(e.rec.title);put2({phase:'pl',hits:sim,hi:0});return}
+  if((q.t+q.a).length<2){put2({phase:'none',hits:null,hi:0,msg:'Der Titel ist zu kurz für die Suche.'});return}
+  var fn=kind==='album'?onlineAlbums:kind==='artist'?onlineArtists:onlineSongs,term=kind==='artist'?e.rec.title.trim():(q.t+' '+q.a).trim();
+  fn(term,function(r,err){
    if(PX.f!==f)return;
-   if(!r){f.phase='none';f.msg=err||'Die Suche ist gerade nicht erreichbar.'}
-   else{var l=rankHits(r,q);f.hits=l;f.phase=l.length?'best':'none'}
-   render();
+   if(!r){put2({phase:'none',hits:null,hi:0,msg:err||'Die Suche ist gerade nicht erreichbar.'});return}
+   var l;
+   if(kind==='song')l=rankHits(r,q);
+   else if(kind==='album')l=rankHits(r.map(function(h){var o={};for(var k in h)o[k]=h[k];o.al=h.t;return o}),q).map(function(h){delete h.al;return h});
+   else{var nt=nrm(e.rec.title);l=r.slice().sort(function(a,b){return (nrm(a.t)===nt?0:1)-(nrm(b.t)===nt?0:1)})}
+   put2({phase:l.length?'best':'none',hits:l,hi:0});
   });
+ }
+ function pxKindSwitch(e,t){
+  var f=PX.f;if(f.kind===t)return;
+  if(f.kind)f.rs[f.kind]={phase:f.phase,hits:f.hits,hi:f.hi,msg:f.msg};
+  f.kind=t;var sv=f.rs[t];
+  if(sv){f.phase=sv.phase;f.hits=sv.hits;f.hi=sv.hi;f.msg=sv.msg||'';render();return}
+  pxSearchK(e,t);render();
+ }
+ function pxGone(e,old,txt){
+  PX.f=null;PULT.key=null;
+  snack(txt,'Rückgängig',function(){put('songs',old);PULT.key=e.key;PULT.force=true;PX.f=null;render()});
+  render();
+ }
+ function pxAlbumApply(e,h){
+  if(!h)return;var n=e.rec,old=cp(n),now=Date.now();
+  pickArtist(h.a,function(aid){
+   if(findAlbum(h.t,aid)){del('songs',n.id);pxGone(e,old,'Das Album gab es schon · Notiz entfernt');return}
+   var nr=newAlbumRec(h.t,aid,h.ty||'');
+   nr.year=h.y||0;if(h.y){nr.rel=h.y+'-01-01';nr.est=1}nr.cover=h.c||'';nr.total=h.tc||0;nr.onlineId=h.id||'';
+   preSet(nr,'artist','t');if(nr.type)preSet(nr,'type','t');if(nr.year)preSet(nr,'date','t');if(nr.cover)preSet(nr,'cover','t');
+   nr.conf='n';nr.created=n.created;nr.since=now;
+   del('songs',n.id);put('albums',nr);
+   var key='a'+nr.id;PX.undo=function(){del('albums',nr.id);put('songs',old)};
+   PULT.key=key;PULT.force=true;pxAfter(key,'neu');
+  });
+ }
+ function pxArtistApply(e,h){
+  if(!h)return;var n=e.rec,old=cp(n),now=Date.now();
+  if(findArtist(h.t)){del('songs',n.id);pxGone(e,old,'Den Interpreten gab es schon · Notiz entfernt');return}
+  var nr=newArtistRec(h.t);nr.conf='n';nr.created=n.created;nr.since=now;
+  del('songs',n.id);put('artists',nr);
+  var key='i'+nr.id;PX.undo=function(){del('artists',nr.id);put('songs',old)};
+  PULT.key=key;PULT.force=true;pxAfter(key,'neu');
  }
  function pxNoteSelf(e){
   var r=cp(e.rec),old=cp(e.rec),m=/^(.+?)\s[–-]\s(.+)$/.exec(r.title);
@@ -2031,14 +2094,14 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   switch(a){
    case 'pen':sfOpen(cur.key);return;
    case 'kind':{var kt=el.getAttribute('data-t');
-    if(cur.kind==='song'&&cur.rec.state==='neu'){if(kt==='song'&&f.kind==='song'&&f.phase!=='pick')return;f.kind=kt;pxNoteNext(cur);return}
+    if(cur.kind==='song'&&cur.rec.state==='neu'){pxKindSwitch(cur,kt);return}
     f.kind=kt;render();return}
    case 'nweiter':pxNoteNext(cur);return;
-   case 'nback':f.phase='pick';render();return;
-   case 'nok':pxHitApply(cur,f.phase==='list'?f.hits[f.hi]:f.hits[0]);return;
+   case 'nback':f.phase='best';f.hi=0;render();return;
+   case 'nok':{var hh=f.phase==='list'?f.hits[f.hi]:f.hits[0];if(f.kind==='album')pxAlbumApply(cur,hh);else if(f.kind==='artist')pxArtistApply(cur,hh);else pxHitApply(cur,hh);return}
    case 'nalt':f.phase='list';f.hi=1;render();return;
-   case 'nagain':pxSearch(cur);render();return;
-   case 'nself':pxNoteSelf(cur);return;
+   case 'nagain':pxSearchK(cur,f.kind);render();return;
+   case 'nself':if(f.kind==='album'||f.kind==='artist'||f.kind==='playlist')pxConvert(cur,f.kind);else pxNoteSelf(cur);return;
    case 'hprev':f.hi=Math.max(0,f.hi-1);render();return;
    case 'hnext':f.hi=Math.min(Math.min(8,f.hits.length),f.hi+1);render();return;
    case 'later':pxLaterE(cur);return;
@@ -2439,6 +2502,14 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
  function onlineSongs(q,cb){
   if(DEMO||typeof google==='undefined'||!google.script){setTimeout(function(){var w=q.toLowerCase().split(/\s+/).filter(Boolean);cb(CAT.filter(function(c){var t=(c.t+' '+c.a+' '+c.al).toLowerCase();return w.some(function(x){return t.indexOf(x)>=0})}))},250);return}
   google.script.run.withSuccessHandler(function(r){cb(r||[])}).withFailureHandler(function(er){cb(null,er&&er.message?er.message:'Die Suche ist gerade nicht erreichbar.')}).searchSongs(q);
+ }
+function onlineAlbums(q,cb){
+  if(DEMO||typeof google==='undefined'||!google.script){setTimeout(function(){var w=q.toLowerCase().split(/\s+/).filter(Boolean),seen={},out=[];CAT.forEach(function(c){var k=c.al+'|'+c.a;if(seen[k])return;seen[k]=1;var t=(c.al+' '+c.a).toLowerCase();if(w.some(function(x){return t.indexOf(x)>=0}))out.push({t:c.al,a:c.a,y:c.y,tc:c.tc,c:'',id:'al'+c.id,ty:c.ty})});cb(out)},250);return}
+  google.script.run.withSuccessHandler(function(r){cb(r||[])}).withFailureHandler(function(er){cb(null,er&&er.message?er.message:'Die Suche ist gerade nicht erreichbar.')}).searchAlbums(q);
+ }
+ function onlineArtists(q,cb){
+  if(DEMO||typeof google==='undefined'||!google.script){setTimeout(function(){var w=q.toLowerCase().split(/\s+/).filter(Boolean),seen={},out=[];CAT.forEach(function(c){if(seen[c.a])return;seen[c.a]=1;if(w.some(function(x){return c.a.toLowerCase().indexOf(x)>=0}))out.push({t:c.a,g:'Pop',id:'ar'+c.id})});cb(out)},250);return}
+  google.script.run.withSuccessHandler(function(r){cb(r||[])}).withFailureHandler(function(er){cb(null,er&&er.message?er.message:'Die Suche ist gerade nicht erreichbar.')}).searchArtists(q);
  }
  function albumInfoOnline(a,cb){
   if(DEMO||typeof google==='undefined'||!google.script){setTimeout(function(){cb({id:'9',title:a.title,artist:'',year:2011,date:'2011-05-20',type:'Album',total:11,cover:''})},250);return}
@@ -3525,6 +3596,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
    ['Eckdaten verstehen','Im Menü findest du die Eckdaten: Zahlen zu deiner Sammlung, dem Fortschritt, der Spielzeit und deiner Aktivität. Sie sind nur zum Anschauen, du kannst dort nichts ändern.']
   ]],
   ['Tipps',[
+   ['Art einer Notiz wählen','Oben auf der Notizkarte stehen **Song**, **Album**, **Interpret** und **Playlist**. Jeder Tipp zeigt dir die besten Treffer für diese Art, du kannst beliebig hin und her springen. Die Notiz bleibt dabei eine Notiz. Erst **Übernehmen** macht daraus einen Song, ein Album, einen Interpreten oder eine Playlist. Bei Alben und Interpreten zeigt DocThor, wenn es sie schon in deiner Mediathek gibt. Bei Playlists gibt es keine Online-Suche, DocThor zeigt ähnlich heißende eigene Playlists.'],
    ['Kleine Abkürzungen','Tipp auf **DocThor** bringt dich zum Mischpult. Tipp auf die **Überschrift** scrollt nach oben. Am Mischpult holt ein Tipp auf eine Zeile den Eintrag ins Pult, ein langer Druck öffnet seine Karte. In der Mediathek hat ein langer Druck keine Funktion. In einer Notiz speichert Enter. Im Modus „Mehrere“ (eine Zeile pro Eintrag) speichert Cmd/Strg + Enter.'],
    ['Später: warum steht das dort?','Unter „Später“ stehen Einträge, die gerade nicht dran sind: Merkliste-Songs bis zu ihrem Termin und alles, was du mit „Später“ zur Seite gelegt hast. Die Zeile ist grau und hat eine Uhr mit dem Datum. Ein Tipp holt den Eintrag trotzdem sofort ins Pult.'],
    ['Lange Titel und Lauftext','Passt ein Titel nicht in die Zeile, läuft er langsam nach links und bleibt am Ende kurz stehen. Hast du auf dem iPhone „Bewegung reduzieren“ an, steht stattdessen eine Abkürzung mit „…“.'],
