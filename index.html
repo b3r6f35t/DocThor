@@ -633,10 +633,10 @@ body.offl #pult{top:calc(env(safe-area-inset-top) + 84px)}
 .ft3b{display:flex;gap:8px;align-items:center;margin-top:14px}
 .b.p3,.b.g3{flex:1;padding:13px 10px;border-radius:13px;font-size:16px;font-weight:700;text-align:center;border:0}
 .b.p3{background:#2f6b3f;color:#fff}
-.b.g3{background:var(--pf);color:#cfe0d4;flex:.8}
+.b.g3{background:var(--pf);color:#cfe0d4}
 .b.p3[disabled]{opacity:.38}
-.ft3b>.b.g3:only-child{flex:none;width:calc((100% - 8px)*.8/1.8)}
 .nb{flex:none;color:#cfe0d4;font-size:13.5px;font-weight:600;padding:6px 6px;text-align:center;max-width:96px;line-height:1.15}
+.ft3b>.nb:only-child{flex:1;max-width:none;font-size:15px;padding:13px 6px}
 .b.wide{flex:none;width:100%;margin-top:14px}
 /* Zwischenkarte */
 .sum{background:var(--pf);border-radius:13px;padding:4px 14px;margin-top:8px}
@@ -1619,7 +1619,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   var ks=[['song','Song'],['album','Album'],['artist','Interpret'],['playlist','Playlist']];
   var rt='<div class="rt">'+ks.map(function(k){return '<button data-px="kind" data-t="'+k[0]+'" class="'+(f.kind===k[0]?'on':'')+'"'+(fixed&&k[0]!==e.kind?' disabled':'')+'>'+k[1]+'</button>'}).join('')+'</div>';
   var body=rt,foot,searching=plain&&f.kind==='song'&&f.phase!=='pick';
-  if(!searching)foot=plain?pxFoot({t:'Später',a:'later'}):pxFoot({t:'Später',a:'later'},{t:'Weiter',a:'nweiter',dis:!f.kind});
+  if(!searching)foot=plain?pxFoot(null,null,{t:'Später',a:'later'}):pxFoot({t:'Später',a:'later'},{t:'Weiter',a:'nweiter',dis:!f.kind});
   else if(f.phase==='search'){body+='<div class="srch"><div class="spn2"></div>Suche online …</div>';foot=pxFoot({t:'Zurück',a:'nback'},{t:'Übernehmen',a:'nok',dis:true})}
   else if(f.phase==='best'){body+=hitBox(f.hits[0],'GEFUNDEN')+(f.hits.length>1?'<button class="tl3" data-px="nalt">Anderer Treffer</button>':'');foot=pxFoot({t:'Später',a:'later'},{t:'Übernehmen',a:'nok'})}
   else if(f.phase==='list'){
