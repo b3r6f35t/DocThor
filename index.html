@@ -940,6 +940,16 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
 #hdr .hm{position:relative}
 #hdr .hm.dot::after{content:"";position:absolute;top:6px;right:4px;width:10px;height:10px;border-radius:50%;background:#e08a1e;box-shadow:0 0 0 2px var(--bg)}
 #tabs [data-sb=dup].dot::after{content:"";width:9px;height:9px;border-radius:50%;background:#e08a1e;margin-left:auto;flex:none}
+
+@media(max-width:999px){
+html.pfix,body.pfix{overflow:hidden;overscroll-behavior:none}
+body.pfix #p-in{height:100dvh;min-height:0;overflow:hidden;padding-bottom:0}
+body.pfix #pult{position:static;height:var(--ph,auto);padding:0;margin:0}
+body.pfix #pult .px{height:100%;min-height:0}
+body.pfix #pult .px .bd3{min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+body.pfix #pult .px>*{flex-shrink:0}body.pfix #pult .px>.bd3{flex-shrink:1}
+body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
+}
 </style>
 <div id="hd"><div id="hdr"></div></div>
 <div id="offs" hidden><i></i>Keine Verbindung · Änderungen gesperrt</div>
@@ -1164,7 +1174,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  function put(c,r){var a=D[c],i=-1;for(var k=0;k<a.length;k++)if(a[k].id===r.id){i=k;break}if(i>=0)a[i]=r;else a.push(r);Q.push({t:'put',c:c,r:r});persist();flush()}
  function del(c,id){D[c]=D[c].filter(function(x){return x.id!==id});Q.push({t:'del',c:c,id:id});persist();flush()}
  var FT=0,OFFL=false;
- function setOffline(v){OFFL=!!v;var o=$('offs');if(o)o.hidden=!OFFL;document.body.classList.toggle('offl',OFFL)}
+ function setOffline(v){OFFL=!!v;var o=$('offs');if(o)o.hidden=!OFFL;document.body.classList.toggle('offl',OFFL);if(typeof pFit==='function')setTimeout(pFit,50)}
  function flush(){
   if(DEMO||busy||!Q.length)return;busy=true;var b=Q.slice();
   google.script.run.withSuccessHandler(function(){Q.splice(0,b.length);LS('dt.q',Q);busy=false;SYNC=Date.now();setOffline(false);if(!Q.length&&$('snk').classList.contains('er'))snackOff();flush()}).withFailureHandler(function(){busy=false;setOffline(true);snackErr('Speichern hat nicht geklappt',function(){flush()});clearTimeout(FT);FT=setTimeout(flush,8000)}).saveOps(b);
@@ -1803,8 +1813,21 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
    else if(p==='song')renderSong();
    else if(p==='se')renderSe();
   }catch(x){if(window.console)console.error(x)}
-  dupDot();
+  dupDot();pFix();
  }
+ /* Mischpult am iPhone: feste Größe, Seite scrollt nicht */
+ function pFix(){
+  var on=!MACW()&&curPage()==='in'&&PULT.tab==='pult';
+  document.documentElement.classList.toggle('pfix',on);document.body.classList.toggle('pfix',on);
+  if(on)requestAnimationFrame(pFit);else $('pult').style.removeProperty('--ph');
+ }
+ function pFit(){
+  var a=document.activeElement;if(a&&/INPUT|TEXTAREA/.test(a.tagName))return;
+  var bx=$('pult');if(!document.body.classList.contains('pfix'))return;
+  var top=bx.getBoundingClientRect().top,bar=$('tabs').offsetHeight,h=Math.round(window.innerHeight-top-bar-12);
+  bx.style.setProperty('--ph',Math.max(380,Math.min(h,640))+'px');
+ }
+ window.addEventListener('resize',pFit);window.addEventListener('orientationchange',function(){setTimeout(pFit,200)});
  /* Orangener Punkt am Menü, solange es ungeprüfte Dubletten gibt */
  function dupDot(){
   var on=false;if(typeof DPK==='undefined'||!DPK){setTimeout(dupDot,200);return}
