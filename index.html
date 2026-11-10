@@ -936,6 +936,10 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
 .qe{text-align:center;color:var(--s);padding:40px 0;font-size:14px}
 #p-in.tab-queue .qh,#p-in.tab-park .qh{display:none}
 }
+
+#hdr .hm{position:relative}
+#hdr .hm.dot::after{content:"";position:absolute;top:6px;right:4px;width:10px;height:10px;border-radius:50%;background:#e08a1e;box-shadow:0 0 0 2px var(--bg)}
+#tabs [data-sb=dup].dot::after{content:"";width:9px;height:9px;border-radius:50%;background:#e08a1e;margin-left:auto;flex:none}
 </style>
 <div id="hd"><div id="hdr"></div></div>
 <div id="offs" hidden><i></i>Keine Verbindung · Änderungen gesperrt</div>
@@ -1156,7 +1160,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
  var BKB=0;
  var D={songs:[],artists:[],albums:[],playlists:[],links:[],trash:[],ign:[]},Q=[],busy=false,READY=false,FAIL=false,META={backup:0},SYNC=0;
  function norm(g){var o={};['songs','artists','albums','playlists','links','trash','ign'].forEach(function(k){o[k]=(g&&g[k])||[]});return o}
- function persist(){LS(DEMO?'dt.demo':'dt.cache',D);if(!DEMO)LS('dt.q',Q)}
+ function persist(){LS(DEMO?'dt.demo':'dt.cache',D);if(!DEMO)LS('dt.q',Q);if(typeof dupDot==='function')dupDot()}
  function put(c,r){var a=D[c],i=-1;for(var k=0;k<a.length;k++)if(a[k].id===r.id){i=k;break}if(i>=0)a[i]=r;else a.push(r);Q.push({t:'put',c:c,r:r});persist();flush()}
  function del(c,id){D[c]=D[c].filter(function(x){return x.id!==id});Q.push({t:'del',c:c,id:id});persist();flush()}
  var FT=0,OFFL=false;
@@ -1345,7 +1349,7 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
   CURP=id;var base=tabPage(),cm=MACW()&&CARDP.indexOf(id)>=0&&(base==='in'||base==='me'||base==='pl');
   [].forEach.call(document.querySelectorAll('.page'),function(p){p.classList.toggle('on',p.id==='p-'+id||(cm&&p.id==='p-'+base))});
   var sc=$('scr');sc.classList.toggle('cm',cm);sc.classList.toggle('hint',MACW()&&!cm&&(id==='me'||id==='pl'));sc.setAttribute('data-b',base);
-  setHeader();setPath();if(window.macSel)macSel();
+  setHeader();setPath();if(window.macSel)macSel();dupDot();
  }
  function setHeader(){
   if(curPage()==='se'){$('hdr').innerHTML='<div class="seb"><label class="sb">'+ICON_LUPE+'<input id="seq" type="search" placeholder="Songs, Alben, Interpreten …" autocomplete="off" aria-label="Suchen" value="'+esc(SE.q)+'"></label><button id="seab">Abbrechen</button></div>';return}
@@ -1799,6 +1803,13 @@ body.offl .page{padding-top:calc(env(safe-area-inset-top) + 84px)}
    else if(p==='song')renderSong();
    else if(p==='se')renderSe();
   }catch(x){if(window.console)console.error(x)}
+  dupDot();
+ }
+ /* Orangener Punkt am Menü, solange es ungeprüfte Dubletten gibt */
+ function dupDot(){
+  var on=false;if(typeof DPK==='undefined'||!DPK){setTimeout(dupDot,200);return}
+  try{on=READY&&dupCount()>0}catch(x){}
+  [].forEach.call(document.querySelectorAll('#hmenu,[data-sb=dup]'),function(b){b.classList.toggle('dot',on)});
  }
  /* Start- und Ladefehler-Anzeige */
  function bootState(){
