@@ -1568,7 +1568,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
  }
  /* Fuß: links, Mitte (Textlink), rechts */
  function pxBtn(b,cls){return '<button class="b '+cls+'" data-px="'+b.a+'"'+(b.dis?' disabled':'')+'>'+b.t+'</button>'}
- function pxFoot(l,r,mid){return '<div class="ft3b">'+(l?pxBtn(l,'g3'):'')+(mid?'<button class="nb" data-px="'+mid.a+'">'+mid.t+'</button>':'')+(r?pxBtn(r,'p3'):'')+'</div>'}
+ function pxFoot(l,r,mid){return pxFootC(r,[l,mid].filter(Boolean))}
  function pxFootC(main,links,above){
   return '<div class="ft3c">'+(above?(above.html||'<button class="tl3 ab" data-px="'+above.a+'">'+above.t+'</button>'):'')+(main?pxBtn(main,'p3'):'')+(links&&links.length?'<div class="lks">'+links.map(function(l){return '<button class="nb2" data-px="'+l.a+'">'+l.t+'</button>'}).join('')+'</div>':'')+'</div>';
  }
@@ -1705,7 +1705,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
  }
  function plSorted(){return D.playlists.slice().sort(function(a,b){return cmpTxt(a.name,b.name)})}
  function pxCheck(e,step,f){
-  if(step==='such')return {h:'<div class="fd"><label>Suchen</label>'+searchLink(e)+'</div><button class="tl3" data-px="nfound">Nicht gefunden</button>',f:pxFoot({t:'Später',a:'later'},{t:'Gefunden',a:'found'})};
+  if(step==='such')return {h:'<div class="fd"><label>Suchen</label>'+searchLink(e)+'</div>',f:pxFootC({t:'Gefunden',a:'found'},[{t:'Später',a:'later'},{t:'Nicht gefunden',a:'nfound'}])};
   if(step==='msuch')return {h:'<div class="fd"><label>Suchen</label>'+searchLink(e)+'</div>',f:pxFoot({t:'Noch nicht',a:'noch'},{t:'Gefunden',a:'found'})};
   /* plist */
   var ids=Object.keys(f.pls),names=ids.map(function(i){var p=plById(i);return p?p.name:''}).filter(Boolean);
@@ -1800,7 +1800,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
    var dn='';
    if(cur.st==='entwurf'&&!PX.edit&&STEPS[cur.kind]&&STEPS[cur.kind].indexOf(step)>=0){
     var cr=pxConfRows(cur).filter(function(r){return r.k&&r.k!==step});
-    dn='<button class="dn5" data-px="pen"><span><small>TITEL</small><b>'+esc(titleOf(cur))+'</b></span><u>Ändern</u></button>'+cr.map(function(r){return '<button class="dn5" data-px="jump" data-k="'+r.k+'"><span><small>'+r.l.toUpperCase()+'</small><b>'+esc(r.v)+'</b></span><u>Ändern</u></button>'}).join('');
+    dn='<button class="dn5" data-px="pen"><span><small>'+(cur.kind==='artist'||cur.kind==='playlist'?'NAME':'TITEL')+'</small><b>'+esc(titleOf(cur))+'</b></span><u>Ändern</u></button>'+cr.map(function(r){return '<button class="dn5" data-px="jump" data-k="'+r.k+'"><span><small>'+r.l.toUpperCase()+'</small><b>'+esc(r.v)+'</b></span><u>Ändern</u></button>'}).join('');
    }
    html='<div class="px'+(b.tall?' tall':'')+'">'+pxHead(cur,{img:(step==='cover'||step==='foto')?f.img:''})+bar+(b.pre||'')+'<div class="bd3">'+hint+dn+b.h+'</div>'+b.f+'</div>';
   }
