@@ -967,6 +967,14 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
 .hit3 .m5{min-width:0;flex:1}.hit3 .m5 b{display:block;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hit3 .m5 small{display:block;color:var(--ps);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
 .hit3 .ck5{color:#9fd8ab;font-weight:700;font-size:16px}
+
+.self5{display:flex;gap:11px;align-items:center;width:100%;text-align:left;background:none;border:1.5px dashed #6f9a7c;border-radius:13px;padding:10px 12px;margin:4px 0 10px;color:#cfe0d4;font:inherit}
+.self5 .si{width:30px;text-align:center;font-size:18px;color:#9fd8ab}
+.self5 .m5{min-width:0;flex:1}.self5 .m5 b{display:block;font-size:14px}.self5 .m5 small{display:block;color:var(--ps);font-size:11.5px;margin-top:2px}
+.note5{background:var(--pf);border-radius:12px;padding:10px 12px;font-size:12.5px;color:#cfe0d4;margin:2px 0 8px}
+.dn5{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;background:#2a4735;border:0;border-radius:11px;padding:8px 12px;margin-bottom:6px;color:var(--pt);font:inherit}
+.dn5 small{display:block;color:var(--ps);font-size:10px;font-weight:700;letter-spacing:.07em}.dn5 b{font-weight:600;font-size:14px}.dn5 u{text-decoration:none;color:#9fd8ab;font-size:12.5px;flex:none;margin-left:10px}
+.dn5 span{min-width:0}.dn5 b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 </style>
 <div id="hd"><div id="hdr"></div></div>
 <div id="offs" hidden><i></i>Keine Verbindung · Änderungen gesperrt</div>
@@ -1562,7 +1570,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
  function pxBtn(b,cls){return '<button class="b '+cls+'" data-px="'+b.a+'"'+(b.dis?' disabled':'')+'>'+b.t+'</button>'}
  function pxFoot(l,r,mid){return '<div class="ft3b">'+(l?pxBtn(l,'g3'):'')+(mid?'<button class="nb" data-px="'+mid.a+'">'+mid.t+'</button>':'')+(r?pxBtn(r,'p3'):'')+'</div>'}
  function pxFootC(main,links,above){
-  return '<div class="ft3c">'+(above?'<button class="tl3 ab" data-px="'+above.a+'">'+above.t+'</button>':'')+(main?pxBtn(main,'p3'):'')+(links&&links.length?'<div class="lks">'+links.map(function(l){return '<button class="nb2" data-px="'+l.a+'">'+l.t+'</button>'}).join('')+'</div>':'')+'</div>';
+  return '<div class="ft3c">'+(above?(above.html||'<button class="tl3 ab" data-px="'+above.a+'">'+above.t+'</button>'):'')+(main?pxBtn(main,'p3'):'')+(links&&links.length?'<div class="lks">'+links.map(function(l){return '<button class="nb2" data-px="'+l.a+'">'+l.t+'</button>'}).join('')+'</div>':'')+'</div>';
  }
  function pxField(label,inner,mark,cls){return '<div class="fd"><label>'+label+'</label><div class="fi '+(cls||'')+'">'+inner+(mark?'<em class="mkr">'+mark+'</em>':'')+'</div></div>'}
  var MK={n:'AUS NOTIZ',t:'AUS TREFFER',h:'HEUTE'};
@@ -1641,7 +1649,8 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   var r=e.rec,plain=(e.kind==='song'&&r.state==='neu'),fixed=!plain;
   var ks=[['song','Song'],['album','Album'],['artist','Interpret'],['playlist','Playlist']];
   var rt='<div class="rt">'+ks.map(function(k){return '<button data-px="kind" data-t="'+k[0]+'" class="'+(f.kind===k[0]?'on':'')+'"'+(fixed&&k[0]!==e.kind?' disabled':'')+'>'+k[1]+'</button>'}).join('')+'</div>';
-  var body=rt,foot,K=f.kind,searching=plain&&K&&f.phase!=='pick',L={t:'Später',a:'later'};
+  var body='',foot,K=f.kind,searching=plain&&K&&f.phase!=='pick',L={t:'Später',a:'later'},KL={song:'Song',album:'Album',artist:'Interpret',playlist:'Playlist'};
+  var selfRow={html:'<button class="self5" data-px="nself"><span class="si">✎</span><span class="m5"><b>Selbst eintragen als '+(KL[K]||'')+'</b><small>Nichts davon übernehmen</small></span></button>'};
   if(!searching)foot=plain?pxFootC(null,[L]):pxFoot(L,{t:'Weiter',a:'nweiter',dis:!f.kind});
   else if(f.phase==='search'){body+='<div class="srch"><div class="spn2"></div>Suche online …</div>';foot=pxFootC({t:'Übernehmen',a:'nok',dis:true},[L])}
   else if(f.phase==='pl'){
@@ -1651,9 +1660,9 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   else if(f.phase==='list'||f.phase==='best'){
    var hs=f.hits.slice(0,8);
    body+='<div class="lab5">'+hs.length+(hs.length===1?' TREFFER':' TREFFER')+'</div>'+hs.map(function(h,i){return hitRow(h,K,i===f.hi,i)}).join('');
-   foot=pxFootC({t:'Übernehmen',a:'nok'},[L],{t:'Selbst eintragen',a:'nself'});
+   foot=pxFootC({t:'Übernehmen',a:'nok'},[L],selfRow);
   }else{body+='<div class="none">'+(f.msg&&f.msg.indexOf('zu kurz')>=0?esc(f.msg):'Online nichts gefunden')+'</div><button class="tl3" data-px="nagain">Nochmal suchen</button>';foot=pxFootC({t:'Selbst eintragen',a:'nself'},[L])}
-  return {h:body,f:foot};
+  return {h:body,f:foot,pre:rt};
  }
  /* Schritt-Karten */
  function pxStep(e,step,f){
@@ -1785,7 +1794,15 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
    var n=BARN[cur.kind],bar;
    if(step==='notiz')bar=barHtml(f.kind?BARN[f.kind]:0,0,0,'neu',!f.kind);
    else{var bi=barIdx(cur,step);bar=barHtml(n,bi,bi,cur.st)}
-   html='<div class="px'+(b.tall?' tall':'')+'">'+pxHead(cur,{img:(step==='cover'||step==='foto')?f.img:''})+bar+'<div class="bd3">'+b.h+'</div>'+b.f+'</div>';
+   if(PX.selfNext){PX.selfNext=false;PX.selfHint={key:cur.key,sig:sig}}
+   var hint='';
+   if(PX.selfHint){if(PX.selfHint.key===cur.key&&PX.selfHint.sig===sig&&step!=='notiz')hint='<div class="note5">Du trägst selbst ein. Es wurde nichts online übernommen.</div>';else PX.selfHint=null}
+   var dn='';
+   if(cur.st==='entwurf'&&!PX.edit&&STEPS[cur.kind]&&STEPS[cur.kind].indexOf(step)>=0){
+    var cr=pxConfRows(cur).filter(function(r){return r.k&&r.k!==step});
+    dn='<button class="dn5" data-px="pen"><span><small>TITEL</small><b>'+esc(titleOf(cur))+'</b></span><u>Ändern</u></button>'+cr.map(function(r){return '<button class="dn5" data-px="jump" data-k="'+r.k+'"><span><small>'+r.l.toUpperCase()+'</small><b>'+esc(r.v)+'</b></span><u>Ändern</u></button>'}).join('');
+   }
+   html='<div class="px'+(b.tall?' tall':'')+'">'+pxHead(cur,{img:(step==='cover'||step==='foto')?f.img:''})+bar+(b.pre||'')+'<div class="bd3">'+hint+dn+b.h+'</div>'+b.f+'</div>';
   }
   PX.cur={key:cur.key,st:cur.st};
   box.innerHTML=html;
@@ -2111,6 +2128,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   if(!cur&&a!=='x')return;
   switch(a){
    case 'pen':sfOpen(cur.key);return;
+   case 'jump':PX.edit={key:cur.key,step:el.getAttribute('data-k')};PX.inter=null;PX.f=null;PULT.key=cur.key;PULT.force=true;render();return;
    case 'kind':{var kt=el.getAttribute('data-t');
     if(cur.kind==='song'&&cur.rec.state==='neu'){pxKindSwitch(cur,kt);return}
     f.kind=kt;render();return}
@@ -2118,7 +2136,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
    case 'hsel':f.hi=Number(el.getAttribute('data-i'))||0;render();return;
    case 'nok':{var hh=f.hits&&f.hits[f.hi||0];if(f.kind==='album')pxAlbumApply(cur,hh);else if(f.kind==='artist')pxArtistApply(cur,hh);else pxHitApply(cur,hh);return}
    case 'nagain':pxSearchK(cur,f.kind);render();return;
-   case 'nself':if(f.kind==='album'||f.kind==='artist'||f.kind==='playlist')pxConvert(cur,f.kind);else pxNoteSelf(cur);return;
+   case 'nself':PX.selfNext=true;if(f.kind==='album'||f.kind==='artist'||f.kind==='playlist')pxConvert(cur,f.kind);else pxNoteSelf(cur);return;
    case 'later':pxLaterE(cur);return;
    case 'editx':PX.edit=null;PX.f=null;render();return;
    case 'next':pxNext(cur);return;
