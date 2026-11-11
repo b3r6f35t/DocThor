@@ -1429,7 +1429,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   var id=curPage();if(id==='song'||id==='alb'||id==='int'||id==='plc'||id==='se')pop();
  });
  document.addEventListener('touchmove',function(e){
-  if(e.target.closest&&e.target.closest('.chips,input,textarea,.sheet,.idx,#mnu,.pcl'))return;
+  if(e.target.closest&&e.target.closest('.chips,input,textarea,.sheet,.idx,#mnu,.pcl,.bd3'))return;
   var d=document.scrollingElement||document.documentElement;
   if(d.scrollHeight<=d.clientHeight+1)e.preventDefault();
  },{passive:false});
