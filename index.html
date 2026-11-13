@@ -975,6 +975,8 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
 .dn5{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;background:#2a4735;border:0;border-radius:11px;padding:8px 12px;margin-bottom:6px;color:var(--pt);font:inherit}
 .dn5 small{display:block;color:var(--ps);font-size:10px;font-weight:700;letter-spacing:.07em}.dn5 b{font-weight:600;font-size:14px}.dn5 u{text-decoration:none;color:#9fd8ab;font-size:12.5px;flex:none;margin-left:10px}
 .dn5 span{min-width:0}.dn5 b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lab5.fix{display:flex;justify-content:space-between;align-items:center;padding:0 14px;margin:2px 0 6px}
+.lab5.fix .lk5{background:none;border:0;color:#9fd8ab;font:inherit;font-size:12.5px;font-weight:600;letter-spacing:0;padding:6px 0 6px 12px}
 </style>
 <div id="hd"><div id="hdr"></div></div>
 <div id="offs" hidden><i></i>Keine Verbindung · Änderungen gesperrt</div>
@@ -1649,7 +1651,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   var r=e.rec,plain=(e.kind==='song'&&r.state==='neu'),fixed=!plain;
   var ks=[['song','Song'],['album','Album'],['artist','Interpret'],['playlist','Playlist']];
   var rt='<div class="rt">'+ks.map(function(k){return '<button data-px="kind" data-t="'+k[0]+'" class="'+(f.kind===k[0]?'on':'')+'"'+(fixed&&k[0]!==e.kind?' disabled':'')+'>'+k[1]+'</button>'}).join('')+'</div>';
-  var body='',foot,K=f.kind,searching=plain&&K&&f.phase!=='pick',L={t:'Später',a:'later'},KL={song:'Song',album:'Album',artist:'Interpret',playlist:'Playlist'};
+  var body='',pre2='',foot,K=f.kind,searching=plain&&K&&f.phase!=='pick',L={t:'Später',a:'later'},KL={song:'Song',album:'Album',artist:'Interpret',playlist:'Playlist'};
   var selfRow={html:'<button class="self5" data-px="nself"><span class="si">✎</span><span class="m5"><b>Selbst eintragen als '+(KL[K]||'')+'</b><small>Nichts davon übernehmen</small></span></button>'};
   if(!searching)foot=plain?pxFootC(null,[L]):pxFoot(L,{t:'Weiter',a:'nweiter',dis:!f.kind});
   else if(f.phase==='search'){body+='<div class="srch"><div class="spn2"></div>Suche online …</div>';foot=pxFootC({t:'Übernehmen',a:'nok',dis:true},[L])}
@@ -1659,10 +1661,11 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
    foot=pxFootC({t:'Anlegen',a:'nself'},[L])}
   else if(f.phase==='list'||f.phase==='best'){
    var hs=f.hits.slice(0,8);
-   body+='<div class="lab5">'+hs.length+(hs.length===1?' TREFFER':' TREFFER')+'</div>'+hs.map(function(h,i){return hitRow(h,K,i===f.hi,i)}).join('');
-   foot=pxFootC({t:'Übernehmen',a:'nok'},[L],selfRow);
+   pre2='<div class="lab5 fix"><span>'+hs.length+' TREFFER</span><button class="lk5" data-px="nself">Selbst eintragen ›</button></div>';
+   body+=hs.map(function(h,i){return hitRow(h,K,i===f.hi,i)}).join('');
+   foot=pxFootC({t:'Übernehmen',a:'nok',dis:!(f.hi>=0)},[L]);
   }else{body+='<div class="none">'+(f.msg&&f.msg.indexOf('zu kurz')>=0?esc(f.msg):'Online nichts gefunden')+'</div><button class="tl3" data-px="nagain">Nochmal suchen</button>';foot=pxFootC({t:'Selbst eintragen',a:'nself'},[L])}
-  return {h:body,f:foot,pre:rt};
+  return {h:body,f:foot,pre:rt+(pre2||'')};
  }
  /* Schritt-Karten */
  function pxStep(e,step,f){
@@ -2007,7 +2010,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
    if(kind==='song')l=rankHits(r,q);
    else if(kind==='album')l=rankHits(r.map(function(h){var o={};for(var k in h)o[k]=h[k];o.al=h.t;return o}),q).map(function(h){delete h.al;return h});
    else{var nt=nrm(e.rec.title);l=r.slice().sort(function(a,b){return (nrm(a.t)===nt?0:1)-(nrm(b.t)===nt?0:1)})}
-   put2({phase:l.length?'best':'none',hits:l,hi:0});
+   put2({phase:l.length?'best':'none',hits:l,hi:-1});
   });
  }
  function pxKindSwitch(e,t){
@@ -2133,8 +2136,8 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
     if(cur.kind==='song'&&cur.rec.state==='neu'){pxKindSwitch(cur,kt);return}
     f.kind=kt;render();return}
    case 'nweiter':pxNoteNext(cur);return;
-   case 'hsel':f.hi=Number(el.getAttribute('data-i'))||0;render();return;
-   case 'nok':{var hh=f.hits&&f.hits[f.hi||0];if(f.kind==='album')pxAlbumApply(cur,hh);else if(f.kind==='artist')pxArtistApply(cur,hh);else pxHitApply(cur,hh);return}
+   case 'hsel':{var hn=Number(el.getAttribute('data-i'))||0;f.hi=(f.hi===hn?-1:hn);if(f.kind&&f.rs[f.kind])f.rs[f.kind].hi=f.hi;render();return}
+   case 'nok':{if(!(f.hi>=0))return;var hh=f.hits&&f.hits[f.hi];if(f.kind==='album')pxAlbumApply(cur,hh);else if(f.kind==='artist')pxArtistApply(cur,hh);else pxHitApply(cur,hh);return}
    case 'nagain':pxSearchK(cur,f.kind);render();return;
    case 'nself':PX.selfNext=true;if(f.kind==='album'||f.kind==='artist'||f.kind==='playlist')pxConvert(cur,f.kind);else pxNoteSelf(cur);return;
    case 'later':pxLaterE(cur);return;
