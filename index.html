@@ -1923,7 +1923,9 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
    else if(was==='entwurf'&&ent.st!=='entwurf')t='e';
    else if(was==='checkliste'&&ent.st==='fertig')t='c';
    else if(was==='checkliste'&&ent.st==='merkliste')t='m';
-   if(t){PX.inter={key:key,type:t};PULT.key=key}
+   if(t==='n'){var u0=PX.undo;PULT.key=key;PULT.force=true;
+    if(u0)snack('Übernommen','Rückgängig',function(){var u=PX.undo;PX.inter=null;PX.f=null;PULT.key=key;PULT.force=true;if(u)u();PX.undo=null;render()});
+   }else if(t){PX.inter={key:key,type:t};PULT.key=key}
   }
   render();
  }
