@@ -1640,7 +1640,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
    D.albums.forEach(function(a){if(v&&lc(a.title).indexOf(v)<0)return;var it={id:a.id,t:a.title,al:a,s:[a.type,a.year||(a.rel||'').slice(0,4)].filter(Boolean).join(' · ')||'Album'};if(a.artist===aid)own.push(it);else{it.s=(M.a[a.artist]?M.a[a.artist].name:'')+(it.s?' · '+it.s:'');other.push(it)}});
    out=own.slice(0,5).concat(v?other.slice(0,3):[]);out.forEach(function(x){x.sec='AUS DEINER SAMMLUNG'});
    var raw2=f.val.trim();
-   if(!findAlbum(e.rec.title,aid)&&lc(raw2)!==lc(e.rec.title))out.push({single:1,t:e.rec.title,sec:'OHNE ALBUM'});
+   if(!findAlbum(e.rec.title,aid)&&lc(raw2)!==lc(e.rec.title))out.push({single:1,t:e.rec.title,sec:'KEIN ALBUM'});
    if(f.touched&&f.on&&f.on.q===raw2){var seen2={};D.albums.forEach(function(a){if(a.artist===aid)seen2[nrm(a.title)]=1});var an=nrm(((M.a[aid]||{}).name)||'');
     f.on.list.forEach(function(o){if(out.length>=11||!o.t||seen2[nrm(o.t)])return;if(an&&o.a&&nrm(o.a).indexOf(an)<0&&an.indexOf(nrm(o.a))<0)return;seen2[nrm(o.t)]=1;out.push({on:1,t:o.t,al:{cover:o.c||''},raw:o,s:[o.a,o.ty,o.y].filter(Boolean).join(' · '),sec:'ONLINE GEFUNDEN'})})}
   }
@@ -1653,7 +1653,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   l.forEach(function(x,i){
    if(x.sec!==cur){if(open)out+='</div>';cur=x.sec;open=true;out+=(cur?'<div class="lab5 sec">'+cur+'</div>':'')+'<div class="sug3">'}
    if(x.nw)out+='<button class="sg3 nw" data-px="sug" data-i="'+i+'"><span class="pl">+</span><span class="n">„'+esc(x.t)+'“ neu anlegen</span></button>';
-   else if(x.single)out+='<button class="sg3 nw" data-px="sug" data-i="'+i+'"><span class="pl">+</span><span class="n">Einzelsong: Single „'+esc(x.t)+'“</span></button>';
+   else if(x.single)out+='<button class="sg3 nw" data-px="sug" data-i="'+i+'"><span class="pl">+</span><span class="n">Als Single anlegen<small>„'+esc(x.t)+'“</small></span></button>';
    else{var lead=x.a?avHtml(x.a):'<span class="av cv'+(img(x.al.cover)?' ci':'')+'"'+covStyle(img(x.al.cover))+'>'+(img(x.al.cover)?'':ICON_DISC)+'</span>';
     out+='<button class="sg3" data-px="sug" data-i="'+i+'">'+lead+'<span class="n">'+esc(x.t)+(x.s?'<small>'+esc(x.s)+'</small>':'')+'</span></button>'}
   });
@@ -1777,7 +1777,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   var done={n:1,e:e.kind==='song'?7:n,c:9,m:8}[I.type];
   var rows=interRows(e,I).map(function(x){return '<div class="sr"><span class="ck3">'+CK+'</span><span class="k">'+esc(x[0])+'</span><span class="v">'+esc(x[1])+'</span></div>'}).join('');
   var fin=!(I.type==='n'||(I.type==='e'&&e.kind==='song'));
-  var foot=fin?pxFoot({t:'Zurück',a:'iback'},{t:'Fertig',a:'ifin'}):pxFoot({t:'Später',a:'later'},{t:'Weiter',a:'inext'},{t:'Nächster Beitrag',a:'nextb'});
+  var foot=fin?pxFoot({t:'Zurück',a:'iback'},{t:'Fertig',a:'ifin'}):pxFoot({t:'Später',a:'later'},{t:'Weiter',a:'inext'});
   return {head:pxHead(e,{tick:I.type!=='m',stt:stt,agetxt:I.type==='m'?'ab heute':''}),bar:barHtml(n,done,-1,stt),h:'<div class="sum">'+rows+'</div>',f:foot,st:stt};
  }
  function noteQuery(t){var m=/^(.+?)\s[–-]\s(.+)$/.exec(t);return m?{t:m[1].trim(),a:m[2].trim()}:{t:t.trim(),a:''}}
