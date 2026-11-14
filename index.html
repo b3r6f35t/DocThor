@@ -947,7 +947,7 @@ html.pfix,body.pfix{overflow:hidden;overscroll-behavior:none}
 body.pfix #p-in{height:100dvh;min-height:0;overflow:hidden;padding-bottom:0}
 body.pfix #pult{position:static;height:var(--ph,auto);padding:0;margin:0}
 body.pfix #pult .px{height:100%;min-height:0}
-body.pfix #pult .px .bd3{min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+body.pfix #pult .px .bd3{padding-bottom:10px;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 body.pfix #pult .px>*{flex-shrink:0}body.pfix #pult .px>.bd3{flex-shrink:1}
 body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
 }
@@ -984,6 +984,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
 .sug3+.lab5.sec{margin-top:14px}
 .sug3{max-height:none;overflow:visible;margin-top:0}
 #pxsug>.sug3:first-child{margin-top:8px}
+.fi.fl3.ed::after{content:none}
 </style>
 <div id="hd"><div id="hdr"></div></div>
 <div id="offs" hidden><i></i>Keine Verbindung · Änderungen gesperrt</div>
@@ -1708,13 +1709,13 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   if(step==='artist'||step==='album'){
    return {h:pxField(lab,inp(step==='artist'?'Name':'Albumtitel',step==='artist'?'autocapitalize="words"':'autocapitalize="sentences"'),'','ed')+'<div id="pxsug">'+pxSugHtml(e,step,f)+'</div>',f:pxFoot(L,R(!f.val.trim()))};
   }
-  if(step==='track')return {h:pxField(lab,inp('z. B. 4','inputmode="numeric"'),mark),f:pxFoot(L,R(!(/^\d+$/.test(f.val)&&Number(f.val)>0)))};
-  if(step==='dur')return {h:pxField(lab,inp('mm:ss','inputmode="numeric"'),mark),f:pxFoot(L,R(!durParse(f.val).ok))};
-  if(step==='note')return {h:pxField(lab,inp('z. B. Bonus, Live','autocapitalize="sentences"'),mark),f:pxFoot(L,R(false,f.val.trim()?nx:'Ohne Bemerkung'))};
+  if(step==='track')return {h:pxField(lab,inp('z. B. 4','inputmode="numeric"'),'','ed'),f:pxFoot(L,R(!(/^\d+$/.test(f.val)&&Number(f.val)>0)))};
+  if(step==='dur')return {h:pxField(lab,inp('mm:ss','inputmode="numeric"'),'','ed'),f:pxFoot(L,R(!durParse(f.val).ok))};
+  if(step==='note')return {h:pxField(lab,inp('z. B. Bonus, Live','autocapitalize="sentences"'),'','ed'),f:pxFoot(L,R(false,f.val.trim()?nx:'Ohne Bemerkung'))};
   if(step==='feat'){
-   var chips=f.guests.map(function(g,i){var nw=!findArtist(g);return '<span class="gc'+(nw?' nw':'')+'">'+esc(g)+(nw?'<small>NEU</small>':'')+'<button data-px="gdel" data-i="'+i+'" aria-label="Entfernen">×</button></span>'}).join('');
+   var chips=f.guests.map(function(g,i){var nw=!findArtist(g);return '<span class="gc'+(nw?' nw':'')+'">'+esc(g)+'<button data-px="gdel" data-i="'+i+'" aria-label="Entfernen">×</button></span>'}).join('');
    var inner=chips+(f.add?'<input id="pxin" data-pxin="1" value="'+esc(f.val)+'" placeholder="Name" autocomplete="off" autocapitalize="words">':'<button class="gadd" data-px="gadd">+ Gast</button>');
-   h=pxField(lab,inner,'','fl3')+'<div id="pxsug">'+(f.add?pxSugHtml(e,'feat',f):'')+'</div>';
+   h=pxField(lab,inner,'','fl3 ed')+'<div id="pxsug">'+(f.add?pxSugHtml(e,'feat',f):'')+'</div>';
    return {h:h,f:pxFoot(L,R(f.add&&!!f.val.trim(),f.guests.length?nx:'Ohne Gast'))};
   }
   if(step==='type'){
@@ -1723,7 +1724,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   }
   if(step==='date'){
    var p=dateParse(f.val),two=p.ok&&p.est?'<em class="mkr two">WIRD GESPEICHERT ALS<br>'+p.rel.split('-').reverse().join('.')+'</em>':'';
-   return {h:pxField(lab,inp('TT.MM.JJJJ','inputmode="numeric"'),two||mark),f:pxFoot(L,R(!p.ok))};
+   return {h:pxField(lab,inp('TT.MM.JJJJ','inputmode="numeric"'),two||'','ed'),f:pxFoot(L,R(!p.ok))};
   }
   if(step==='cover'||step==='foto'){
    return {h:pxField(lab,'<button class="pk3" data-px="pickimg"><span>'+(f.img?'Bild ändern':'Bild wählen')+'</span>'+ICON_CHV+'</button>',''),f:pxFoot(L,R(!f.img))};
@@ -1842,6 +1843,8 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   }
   PX.cur={key:cur.key,st:cur.st};
   box.innerHTML=html;
+  var bd=box.querySelector('.bd3'),rows=bd&&bd.querySelectorAll('.dn5');
+  if(rows&&rows.length){var cf=bd.querySelector('.fd:not(.dn)');if(cf){var pk=Math.round(rows[rows.length-1].offsetHeight*0.5);bd.scrollTop=Math.max(0,Math.round(cf.getBoundingClientRect().top-bd.getBoundingClientRect().top+bd.scrollTop-pk-8))}}
   if(PX.fo){PX.fo=false;var i=$('pxin')||$('pxnp');if(i){i.focus();try{i.setSelectionRange(i.value.length,i.value.length)}catch(x){}}}
  }
  function qSub(e){
