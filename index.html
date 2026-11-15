@@ -263,6 +263,7 @@ body.st #fg{display:block}
 .tsg{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .tsg button{flex:1 1 28%;padding:10px 0;border-radius:12px;background:var(--seg);font-weight:600;font-size:15px;text-align:center}
 .tsg button.on{background:var(--mf);color:var(--ac);border:1.5px solid var(--mb)}
+#dgb .tsg button.on{color:#fff}
 .cvw{display:flex;gap:14px;align-items:center;margin-top:10px}
 .cvw .pv{width:96px;height:96px;border-radius:12px;background:var(--ph) center/cover;color:var(--s);display:flex;align-items:center;justify-content:center;flex:none}
 .cvw .pv.rd{border-radius:50%}
@@ -959,6 +960,10 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
 .ft3c .tl3.ab{padding:6px 0 10px}
 .ft3c .lks{display:flex;justify-content:center;gap:4px}
 .nb2{background:none;border:0;color:#cfe0d4;font-size:14.5px;font-weight:600;padding:13px 16px 4px}
+.ov5{background:rgba(255,255,255,.07);border-radius:14px;padding:2px 14px}
+.ov5>div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;font-size:14px}
+.ov5>div+div{border-top:1px solid rgba(255,255,255,.12)}
+.ov5 span{color:var(--ps)}.ov5 b{font-weight:600;text-align:right}
 .lab5{font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--ps);margin:12px 2px 6px}
 .hit3{display:flex;gap:11px;align-items:center;width:100%;text-align:left;background:var(--pf);border:0;border-radius:13px;padding:9px 11px;margin-bottom:7px;color:var(--pt);font:inherit}
 .hit3.sel{box-shadow:0 0 0 2px #5fa774;background:#34583f}
@@ -1342,7 +1347,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   if(!(a.tl||a.pick||isLeg(a)||(a.total>0&&(n[a.id]||0)>=a.total)))m.push({k:'tl',l:'Titelliste'});
   return m;
  }
- function artMiss(a){var m=[];if(!a.name)m.push({k:'name',l:'Name'});if(!a.image&&!isLeg(a)||a.image&&!isC(a,'foto'))m.push({k:'foto',l:'Foto'});if(a.cv&&!a.disk)m.push({k:'disk',l:'Diskografie'});return m}
+ function artMiss(a){var m=[];if(!a.name)m.push({k:'name',l:'Name'});if(!a.image&&!isLeg(a)||a.image&&!isC(a,'foto'))m.push({k:'foto',l:'Foto/Logo'});if(a.cv&&!a.disk)m.push({k:'disk',l:'Diskografie'});return m}
  function plMiss(p){var m=[];if(!p.cv)return m;if(!p.date||!isC(p,'date'))m.push({k:'date',l:'Erstellt'});if(!p.cover||!isC(p,'cover'))m.push({k:'cover',l:'Cover'});return m}
  var ALB_TOTAL=5,SONG_TOTAL=6,ART_TOTAL=3;
  function noteOpen(r){return !!r.cv&&!isC(r,'n')}
@@ -1523,7 +1528,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
  var KW={song:'Song',album:'Album',artist:'Interpret',playlist:'Playlist'};
  var BARN={song:9,album:6,artist:3,playlist:3};
  var STEPS={song:['artist','album','track','dur','feat','note'],album:['artist','type','date','cover','tl'],artist:['foto','disk'],playlist:['date','cover']};
- var STL={artist:'Interpret',album:'Album',track:'Titelnummer',dur:'Dauer',feat:'Feat.',note:'Bemerkung',type:'Typ',date:'',cover:'Cover',tl:'Titelliste',foto:'Foto',disk:'Diskografie'};
+ var STL={artist:'Interpret',album:'Album',track:'Titelnummer',dur:'Dauer',feat:'Feat.',note:'Bemerkung',type:'Typ',date:'',cover:'Cover',tl:'Titelliste',foto:'Foto/Logo',disk:'Diskografie'};
  var STN={neu:'NOTIZ',entwurf:'ENTWURF',checkliste:'CHECKLISTE',merkliste:'MERKLISTE'};
  function coverOfSong(M,s){var a=M.al[s.album];return a?img(a.cover):''}
  function kindIcon(kind){return kind==='song'?ICON_NOTE:kind==='album'?ICON_DISC:kind==='artist'?ICON_PERSON:ICON_LIST}
@@ -1681,13 +1686,21 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   var c=h.c&&isImg(h.c)?h.c:'',ic=kind==='album'?ICON_DISC:ICON_NOTE,own=(kind==='album'||kind==='artist')&&ownHint(h,kind)?' · schon in der Mediathek':'';
   return '<button class="hit3'+(sel?' sel':'')+'" data-px="hsel" data-i="'+i+'"><span class="c5'+(kind==='artist'?' rd':'')+(c?' ci':'')+'"'+covStyle(c)+'>'+(c?'':ic)+'</span><span class="m5"><b>'+esc(h.t)+'</b><small>'+esc(hitLineK(h,kind)+own)+'</small></span>'+(sel?'<span class="ck5">✓</span>':'')+'</button>';
  }
+ function pxOv(e){
+  var r=e.rec,rows=[],k=e.kind,a,al;
+  if(k==='album'){a=artById(r.artist);if(a)rows.push(['Interpret',esc(a.name)]);if(r.type)rows.push(['Typ',esc(r.type)]);if(r.year)rows.push(['Jahr',String(r.year)]);if(r.cover)rows.push(['Cover','vorhanden'])}
+  else if(k==='song'){a=artById(r.artist);al=albById(r.album);if(a)rows.push(['Interpret',esc(a.name)]);if(al)rows.push(['Album',esc(al.title)]);if(r.track)rows.push(['Titelnummer',String(r.track)]);if(r.dur)rows.push(['Dauer',fmtDur(r.dur)])}
+  else if(k==='artist'){rows.push(['Name',esc(r.name)]);var sg=D.songs.filter(function(x){return x.artist===r.id})[0];if(sg)rows.push(['Angelegt aus','Song „'+esc(sg.title)+'“'])}
+  if(!rows.length)return '';
+  return '<div class="lab5">BEIM ANLEGEN ÜBERNOMMEN</div><div class="ov5">'+rows.map(function(x){return '<div><span>'+x[0]+'</span><b>'+x[1]+'</b></div>'}).join('')+'</div>'
+ }
  function pxNotiz(e,f){
   var r=e.rec,plain=(e.kind==='song'&&r.state==='neu'),fixed=!plain;
   var ks=[['song','Song'],['album','Album'],['artist','Interpret'],['playlist','Playlist']];
   var rt='<div class="rt">'+ks.map(function(k){return '<button data-px="kind" data-t="'+k[0]+'" class="'+(f.kind===k[0]?'on':'')+'"'+(fixed&&k[0]!==e.kind?' disabled':'')+'>'+k[1]+'</button>'}).join('')+'</div>';
   var body='',pre2='',foot,K=f.kind,searching=plain&&K&&f.phase!=='pick',L={t:'Später',a:'later'},KL={song:'Song',album:'Album',artist:'Interpret',playlist:'Playlist'};
   var selfRow={html:'<button class="self5" data-px="nself"><span class="si">✎</span><span class="m5"><b>Selbst eintragen als '+(KL[K]||'')+'</b><small>Nichts davon übernehmen</small></span></button>'};
-  if(!searching)foot=plain?pxFootC(null,[L]):pxFoot(L,{t:'Weiter',a:'nweiter',dis:!f.kind});
+  if(!searching){foot=plain?pxFootC(null,[L]):pxFoot(L,{t:'Weiter',a:'nweiter',dis:!f.kind});if(fixed)body+=pxOv(e)}
   else if(f.phase==='search'){body+='<div class="srch"><div class="spn2"></div>Suche online …</div>';foot=pxFootC({t:'Übernehmen',a:'nok',dis:true},[L])}
   else if(f.phase==='pl'){
    var sim=f.hits||[];
@@ -1729,9 +1742,11 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   if(step==='cover'||step==='foto'){
    return {h:pxField(lab,'<button class="pk3" data-px="pickimg"><span>'+(f.img?'Bild ändern':'Bild wählen')+'</span>'+ICON_CHV+'</button>',''),f:pxFoot(L,R(!f.img))};
   }
-  if(step==='tl'||step==='disk'){
-   var o2=step==='tl'?['Online abgleichen','Selbst eintragen']:['Online abgleichen','Selbst anlegen'];
-   return {h:'<div class="fd"><label>'+lab+'</label><div class="caps two">'+['online','self'].map(function(c,i){return '<button data-px="choice" data-c="'+c+'" class="'+(f.choice===c?'on':'')+'">'+o2[i]+'</button>'}).join('')+'</div></div>',f:pxFoot(L,R(!f.choice))};
+  if(step==='tl'){
+   return {h:pxField(lab,'<button class="pk3" data-px="tlopen"><span>Titelliste wählen</span>'+ICON_CHV+'</button>',''),f:pxFoot(L,R(true))};
+  }
+  if(step==='disk'){
+   return {h:pxField(lab,'<button class="pk3" data-px="dkopen"><span>Diskografie wählen</span>'+ICON_CHV+'</button>',''),f:pxFoot(L,R(true))};
   }
   return {h:'',f:''};
  }
@@ -1764,7 +1779,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   else if(I.type==='e'){
    if(e.kind==='song'){rows.push(['Interpret',M.a[r.artist]?M.a[r.artist].name:'–']);rows.push(['Album',M.al[r.album]?M.al[r.album].title:'–']);rows.push(['Titelnummer',r.track?String(r.track):'–']);rows.push(['Dauer',r.dur?fmtDur(r.dur):'–']);rows.push(['Feat.',featNames(r).join(', ')||'keine']);rows.push(['Bemerkung',r.note||'keine'])}
    else if(e.kind==='album'){var n=albumCount()[r.id]||0;rows.push(['Interpret',M.a[r.artist]?M.a[r.artist].name:'–']);rows.push(['Typ',r.type||'–']);rows.push(['Veröffentlichung',relTxt(r,true)||'–']);rows.push(['Cover','gewählt']);rows.push(['Titelliste',r.total?n+' von '+r.total+' Songs':plural(n,'Song','Songs')])}
-   else if(e.kind==='artist'){var na=D.albums.filter(function(a){return a.artist===r.id}).length;rows.push(['Foto','gewählt']);rows.push(['Diskografie',plural(na,'Album','Alben')])}
+   else if(e.kind==='artist'){var na=D.albums.filter(function(a){return a.artist===r.id}).length;rows.push(['Foto/Logo','gewählt']);rows.push(['Diskografie',plural(na,'Album','Alben')])}
    else{rows.push(['Erstellt',fmtDate(r.date)]);rows.push(['Cover','gewählt'])}
   }else if(I.type==='c'){
    var ps=D.links.filter(function(l){return l.song===r.id}).map(function(l){return plById(l.playlist)}).filter(Boolean).map(function(p){return p.name});
@@ -1833,7 +1848,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
    else{var bi=barIdx(cur,step);bar=barHtml(n,bi,bi,cur.st)}
    if(PX.selfNext){PX.selfNext=false;PX.selfHint={key:cur.key,sig:sig}}
    var hint='';
-   if(PX.selfHint){if(PX.selfHint.key===cur.key&&PX.selfHint.sig===sig&&step!=='notiz')hint='<div class="note5">Du trägst selbst ein. Es wurde nichts online übernommen.</div>';else PX.selfHint=null}
+   if(PX.selfHint){if(PX.selfHint.key===cur.key&&PX.selfHint.sig===sig&&step!=='notiz')hint='';else PX.selfHint=null}
    var dn='';
    if(cur.st==='entwurf'&&!PX.edit&&STEPS[cur.kind]&&STEPS[cur.kind].indexOf(step)>=0){
     var cr=pxConfRows(cur).filter(function(r){return r.k&&r.k!==step});
@@ -1949,19 +1964,25 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   PX.undo=function(){put(c,old)};
   pxAfter(e.key,e.st);
  }
+ function pxMerk(key,r){var u=PX.undo;PX.inter=null;PX.f=null;PULT.avoid=key;PULT.key=null;
+  snack('Merkliste · wieder am '+fmtDate((r.rem||Date.now())+28*864e5).slice(0,6),'Rückgängig',function(){PX.inter=null;PX.f=null;PULT.avoid=null;PULT.key=key;PULT.force=true;if(u)u();PX.undo=null;render()});render()}
  function pxAfter(key,was){
-  var ent=entryOf(key);PX.f=null;
-  if(PX.edit&&PX.edit.key===key){PX.edit=null;render();return}
+  var ent=entryOf(key),ex=PX.extra||'';PX.extra='';PX.f=null;
+  if(PX.edit&&PX.edit.key===key){PX.edit=null;render();if(ex)snack(ex);return}
   if(ent&&was){
    var t=null;
    if(was==='neu'&&ent.st!=='neu')t='n';
    else if(was==='entwurf'&&ent.st!=='entwurf')t='e';
    else if(was==='checkliste'&&ent.st==='fertig')t='c';
    else if(was==='checkliste'&&ent.st==='merkliste')t='m';
-   if(t==='n'){var u0=PX.undo;PULT.key=key;PULT.force=true;
-    if(u0)snack('Übernommen','Rückgängig',function(){var u=PX.undo;PX.inter=null;PX.f=null;PULT.key=key;PULT.force=true;if(u)u();PX.undo=null;render()});
+   if(t==='n'||t==='e'){var u0=PX.undo,sm=t==='n'?'Übernommen':ent.kind==='song'?'Entwurf fertig':'Fertig';if(ex){sm+=' · '+ex;ex='';u0=null;snack(sm)}PULT.key=key;PULT.force=true;
+    if(u0)snack(sm,'Rückgängig',function(){var u=PX.undo;PX.inter=null;PX.f=null;PULT.key=key;PULT.force=true;if(u)u();PX.undo=null;render()});
+   }else if(t==='c'||t==='m'){var u1=PX.undo,sm2=t==='c'?'Fertig':'Merkliste · wieder am '+fmtDate((ent.rec.rem||Date.now())+28*864e5).slice(0,6);
+    PX.inter=null;PULT.avoid=key;PULT.key=null;
+    snack(sm2,'Rückgängig',function(){PX.inter=null;PX.f=null;PULT.avoid=null;PULT.key=key;PULT.force=true;if(u1)u1();PX.undo=null;render()});
    }else if(t){PX.inter={key:key,type:t};PULT.key=key}
   }
+  if(ex)snack(ex);
   render();
  }
  function pxLaterE(e){
@@ -2189,9 +2210,11 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
    case 'gdel':f.guests.splice(Number(el.getAttribute('data-i')),1);render();return;
    case 'sug':pxSugPick(cur,Number(el.getAttribute('data-i')));return;
    case 'pickimg':cwOpen(cur);return;
+   case 'dkopen':openDisk(cur.rec.id,false);return;
+   case 'tlopen':TL.key=cur.key;tlOpen('online');return;
    case 'found':{var r=cp(cur.rec);r.state='';cAdd(r,'found');if(cur.st==='merkliste')r.since=Date.now();put('songs',r);PX.f=null;render();return}
-   case 'nfound':{var old=cp(cur.rec),r2=cp(cur.rec);r2.state='merkliste';r2.rem=Date.now();r2.since=Date.now();put('songs',r2);PX.undo=function(){put('songs',old)};PX.inter={key:cur.key,type:'m'};PX.f=null;render();return}
-   case 'noch':{var old2=cp(cur.rec),r3=cp(cur.rec);r3.rem=Date.now();r3.since=Date.now();put('songs',r3);PX.undo=function(){put('songs',old2)};PX.inter={key:cur.key,type:'m'};PX.f=null;render();return}
+   case 'nfound':{var old=cp(cur.rec),r2=cp(cur.rec);r2.state='merkliste';r2.rem=Date.now();r2.since=Date.now();put('songs',r2);PX.undo=function(){put('songs',old)};pxMerk(cur.key,r2);return}
+   case 'noch':{var old2=cp(cur.rec),r3=cp(cur.rec);r3.rem=Date.now();r3.since=Date.now();put('songs',r3);PX.undo=function(){put('songs',old2)};pxMerk(cur.key,r3);return}
    case 'cback':{var r4=cp(cur.rec);cDel(r4,'found');put('songs',r4);PX.f=null;render();return}
    case 'plopen':f.list=true;render();return;
    case 'plback':case 'pldone':f.list=false;render();return;
@@ -2224,7 +2247,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
   var f=PX.f,foto=f.step==='foto',rows=[];
   if(e.kind!=='playlist')rows.push(['on','Online suchen']);
   rows.push(['paste','Bild einfügen'],['up','Hochladen']);if(f.img)rows.push(['fit','Anpassen']);
-  $('cwt').textContent=foto?'Foto':'Cover';
+  $('cwt').textContent=foto?'Foto/Logo':'Cover';
   $('cwb').innerHTML=(f.img?'<div class="cwp'+(foto?' rd':'')+'"'+covStyle(img(f.img))+'></div>':'')+'<div class="opts">'+rows.map(function(r){return '<button data-w="'+r[0]+'"><span style="display:flex;gap:12px;align-items:center"><span style="color:var(--mint);display:flex">'+CW_ICO[r[0]]+'</span>'+r[1]+'</span>'+ICON_CHV+'</button>'}).join('')+'</div>';
   open('cw');
  }
@@ -2253,7 +2276,7 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
    if(r.cover&&isC(r,'cover'))rows.push({k:'cover',l:'Cover',v:'vorhanden'});
    if(!albMiss(r).some(function(m){return m.k==='tl'})){var tc=albumCount()[r.id]||0;rows.push({k:'tl',l:'Titelliste',v:(r.total>0&&tc<r.total)?(tc+' von '+r.total+(tlkOn(r)?' · bewusst':'')):plural(tc,'Song','Songs')})}
   }else if(e.kind==='artist'){
-   if(r.image&&isC(r,'foto'))rows.push({k:'foto',l:'Foto',v:'vorhanden'});
+   if(r.image&&isC(r,'foto'))rows.push({k:'foto',l:'Foto/Logo',v:'vorhanden'});
    if(r.disk)rows.push({l:'Diskografie',v:plural(D.albums.filter(function(a){return a.artist===r.id}).length,'Album','Alben'),ro:1});
   }else{
    if(r.date&&isC(r,'date'))rows.push({k:'date',l:'Erstellt',v:fmtDate(r.date)});
@@ -2423,12 +2446,12 @@ body.pfix #qh:has(.ptabs){position:relative;top:auto;margin-bottom:8px}
    ];
   }else{
    artMiss(r).forEach(function(m){miss[m.k]=1});
-   out=[{k:'foto',l:'Foto',v:r.image?'vorhanden':''}];
+   out=[{k:'foto',l:'Foto/Logo',v:r.image?'vorhanden':''}];
   }
   out.forEach(function(f){f.miss=!!miss[f.k]});
   return out;
  }
- var ERG={artist:'Interpret',album:'Album',track:'Titelnr.',dur:'Dauer',feat:'Feat.',note:'Bemerkung',type:'Typ',date:'Veröffentlichung',cover:'Cover',tl:'Titelliste',foto:'Foto'};
+ var ERG={artist:'Interpret',album:'Album',track:'Titelnr.',dur:'Dauer',feat:'Feat.',note:'Bemerkung',type:'Typ',date:'Veröffentlichung',cover:'Cover',tl:'Titelliste',foto:'Foto/Logo'};
  function totalOf(kind){return kind==='song'?SONG_TOTAL:kind==='album'?ALB_TOTAL:ART_TOTAL}
  /* Entwurf-Kasten (Am Pult und auf den Karten). o.pult: mit „Überspringen“; o.compact: Kopfzeile statt Kartenkopf */
  function draftBox(e,o){
@@ -2836,6 +2859,7 @@ function onlineAlbums(q,cb){
   if(DEMO||typeof google==='undefined'||!google.script){setTimeout(function(){done(tlDemo())},300);return}
   google.script.run.withSuccessHandler(done).withFailureHandler(function(er){done(null,er&&er.message?er.message:'Die Suche ist gerade nicht erreichbar.')}).albumTracks(a.onlineId||'',a.title,(M.a[a.artist]||{}).name||'');
  }
+ function tlHave(){var e=entryOf(TL.key);return e?D.songs.filter(function(x){return x.album===e.rec.id&&x.state!=='neu'}).length:0}
  function tlCount(){return TL.rows.filter(function(r){return r.on&&!r.ex}).length}
  function tlPaintOnline(){
   var b=$('tlb');
@@ -2843,7 +2867,7 @@ function onlineAlbums(q,cb){
   if(!TL.rows.length){b.innerHTML='<div class="erm">'+esc(TL.msg||'Kein Treffer.')+'</div><button class="b ol" style="margin-top:14px;width:100%" data-tl="self">Selbst eintragen</button>';$('tlg').disabled=true;return}
   var n=tlCount();
   b.innerHTML='<div class="hint" style="margin:0 4px 8px">'+TL.rows.length+' Titel gefunden · iTunes</div><div class="card">'+TL.rows.map(function(r,i){return '<div class="lr'+(r.ex?' fix':r.on?' sel':'')+'" data-i="'+i+'"><div class="nr">'+(r.t.n||'')+'</div><div class="m"><b>'+esc(r.t.t)+'</b>'+(r.t.f&&r.t.f.length?'<div class="s">feat. '+esc(r.t.f.join(', '))+'</div>':(r.ex?'<div class="s">schon in der Sammlung</div>':''))+'</div><span class="dur">'+(r.t.d?fmtDur(r.t.d):'')+'</span><div class="ck">'+CK+'</div></div>'}).join('')+'</div>';
-  $('tlg').disabled=false;$('tlg').textContent=n?plural(n,'Song','Songs')+' anlegen':'Ohne Songs weiter';
+  var hv=tlHave();$('tlg').disabled=!n&&!hv;$('tlg').textContent=n?plural(n,'Song','Songs')+' anlegen':(hv?'Fertig':'Anlegen');
  }
  function tlParse(txt){
   return txt.split(/\r?\n/).map(function(l){return l.trim()}).filter(Boolean).map(function(l,i){var m=/^(\d{1,3})[\.\)\-–\s]+\s*(.+)$/.exec(l);return m?{n:Number(m[1]),t:m[2].trim(),d:0,f:[],a:''}:{n:i+1,t:l,d:0,f:[],a:''}});
@@ -2856,7 +2880,7 @@ function onlineAlbums(q,cb){
   var rows=tlParse($('tltx').value);TL.txt=$('tltx').value;var e0=entryOf(TL.key),have=e0?D.songs.filter(function(x){return x.album===e0.rec.id&&x.state!=='neu'}).map(function(x){return nrm(x.title)}):[];TL.rows=rows.map(function(t){return{t:t,on:true,ex:have.indexOf(nrm(t.t))>=0}});var nn=TL.rows.filter(function(r){return !r.ex}).length;
   $('tlhint').textContent=rows.length?rows.length+' Titel erkannt'+(nn<rows.length?' · '+(rows.length-nn)+' schon angelegt':''):'Einfach die Titel untereinander eintippen oder einfügen.';
   $('tlpv').innerHTML=rows.length?'<div class="card" style="margin-top:10px">'+TL.rows.map(function(r){var t=r.t;return '<div class="lr'+(r.ex?' fix':'')+'"><div class="nr">'+t.n+'</div><div class="m"><b>'+esc(t.t)+'</b></div></div>'}).join('')+'</div>':'';
-  $('tlg').disabled=!nn;$('tlg').textContent=nn?plural(nn,'Song','Songs')+' anlegen':'Anlegen';
+  var hv2=tlHave();$('tlg').disabled=!nn&&!hv2;$('tlg').textContent=nn?plural(nn,'Song','Songs')+' anlegen':(hv2?'Fertig':'Anlegen');
  }
  $('tlseg').addEventListener('click',function(e){var b=e.target.closest('button[data-m]');if(!b)return;var m=b.getAttribute('data-m');if(m===TL.mode)return;if(m==='self'){TL.seq++;TL.mode='self';TL.txt='';tlSeg();tlPaintSelf();setTimeout(function(){var t=$('tltx');if(t)t.focus()},50)}else{tlOpen('online')}});
  $('tlb').addEventListener('input',function(e){if(e.target.id==='tltx')tlPreview()});
@@ -2867,7 +2891,7 @@ function onlineAlbums(q,cb){
  $('tlc').onclick=function(){TL.seq++;closeN('tl')};
  $('tlg').onclick=function(){
   var e=entryOf(TL.key);if(!e)return;
-  if(TL.mode==='online'&&tlCount()===0){var ek=TL.key;confirm2('Songs lassen sich später in der Albumkarte ergänzen.','Abschließen',function(){var a0=cp(e.rec);a0.tl=1;put('albums',a0);TL.seq++;closeN('tl');afterEdit(ek)},{labelB:'Offen lassen',fnB:function(){TL.seq++;closeN('tl');skipEntry(ek)}});return}
+  if(tlCount()===0&&!tlHave())return;
   var a=cp(e.rec),M=maps(),now=Date.now(),k=0,aa=M.a[a.artist];
   TL.rows.forEach(function(r){
    if(!r.on||r.ex)return;var t=r.t,aid=a.artist;
@@ -2876,7 +2900,7 @@ function onlineAlbums(q,cb){
    var s=newSongRec({title:t.t,artist:aid,album:a.id,track:t.n||0,dur:t.d||0,feat:f,created:now+k,updated:now+k,since:now+k});if(aid)preSet(s,'artist','t');preSet(s,'album','t');if(t.n)preSet(s,'track','t');if(t.d)preSet(s,'dur','t');if(f)preSet(s,'feat','t');preSet(s,'kind','song');k++;put('songs',s);
   });
   a.tl=1;if(TL.mode==='online'&&TL.info){a.total=TL.info.total||TL.rows.length;if(TL.info.id&&!a.onlineId)a.onlineId=TL.info.id}
-  put('albums',a);TL.seq++;closeN('tl');snack(k?plural(k,'Song','Songs')+' angelegt':'Titelliste gespeichert');afterEdit(TL.key);
+  put('albums',a);TL.seq++;closeN('tl');PX.extra=k?plural(k,'Song','Songs')+' angelegt':'';afterEdit(TL.key);
  };
  /* ---------- Diskografie ergänzen ---------- */
  var DG={id:null,rows:[],load:false,msg:'',own:false,seq:0,ty:'Album'};
@@ -2896,6 +2920,7 @@ function onlineAlbums(q,cb){
    dgPaint();
   });
  }
+ function dgHave(){return D.albums.filter(function(x){return x.artist===DG.id}).length}
  function dgPaint(){
   var b=$('dgb'),a=artById(DG.id);
   if(DG.own){
@@ -2912,14 +2937,14 @@ function onlineAlbums(q,cb){
   if(!DG.rows.length)h+='<div class="erm">Online wurden keine Alben gefunden.</div>';
   h+='<button class="lnk" data-dg="own">Nicht dabei? Selbst anlegen</button>';
   b.innerHTML=h;
-  var n=DG.rows.filter(function(r){return r.on&&!r.ex}).length;$('dgg').disabled=false;$('dgg').textContent=n?n+' anlegen':'Ohne Alben weiter';
+  var n=DG.rows.filter(function(r){return r.on&&!r.ex}).length,hv=dgHave();$('dgg').disabled=!n&&!hv;$('dgg').textContent=n?n+' anlegen':(hv?'Fertig':'Anlegen');
  }
  $('dgb').addEventListener('click',function(e){
   var t=e.target.closest('[data-dg]');
   if(t){var v=t.getAttribute('data-dg');
    if(v==='own'){DG.own=true;DG.ty='Album';dgPaint();setTimeout(function(){var i=$('dgt');if(i)i.focus()},50)}
    else if(v==='owncx'){DG.own=false;dgPaint()}
-   else if(v==='ownok'){var ti=($('dgt')||{}).value;ti=(ti||'').trim();if(!ti){snack('Der Titel fehlt.');return}var al=newAlbumRec(ti,DG.id,DG.ty);preSet(al,'artist','n');put('albums',al);var ar0=artById(DG.id);if(ar0){var a1=cp(ar0);a1.disk=1;put('artists',a1)}DG.seq++;closeN('dg');snack('Album angelegt');afterEdit('i'+DG.id)}
+   else if(v==='ownok'){var ti=($('dgt')||{}).value;ti=(ti||'').trim();if(!ti){snack('Der Titel fehlt.');return}var al=newAlbumRec(ti,DG.id,DG.ty);preSet(al,'artist','n');put('albums',al);var ar0=artById(DG.id);if(ar0){var a1=cp(ar0);a1.disk=1;put('artists',a1)}DG.seq++;closeN('dg');PX.extra='Album angelegt';afterEdit('i'+DG.id)}
    return;
   }
   var ty=e.target.closest('[data-dgt]');if(ty){DG.ty=ty.getAttribute('data-t');var keep=($('dgt')||{}).value;dgPaint();if($('dgt'))$('dgt').value=keep;return}
@@ -2928,13 +2953,13 @@ function onlineAlbums(q,cb){
  $('dgc').onclick=function(){DG.seq++;closeN('dg')};
  $('dgg').onclick=function(){
   var now=Date.now(),k=0,did=DG.id,fin=function(){var ar=artById(did);if(ar){var a2=cp(ar);a2.disk=1;put('artists',a2)}};
-  if(!DG.rows.some(function(r){return r.on&&!r.ex})){confirm2('Du kannst Alben später in der Interpretenkarte ergänzen.','Abschließen',function(){fin();DG.seq++;closeN('dg');afterEdit('i'+did)},{labelB:'Offen lassen',fnB:function(){DG.seq++;closeN('dg');skipEntry('i'+did)}});return}
+  if(!DG.rows.some(function(r){return r.on&&!r.ex})&&!dgHave())return;
   DG.rows.forEach(function(r){
    if(!r.on||r.ex)return;var x=r.a,al=newAlbumRec(x.title,DG.id,x.type||'Album');
    if(x.date){al.rel=x.date;al.est=0;al.year=Number(x.date.slice(0,4))}else if(x.year){al.year=x.year}
    al.cover=x.cover||'';al.total=x.total||0;al.onlineId=x.id||'';al.created=now+k;al.since=now+k;preSet(al,'artist','t');preSet(al,'type','t');if(al.year)preSet(al,'date','t');if(al.cover)preSet(al,'cover','t');k++;put('albums',al);
   });
-  fin();DG.seq++;closeN('dg');snack(plural(k,'Album','Alben')+' angelegt');afterEdit('i'+did);
+  fin();DG.seq++;closeN('dg');PX.extra=k?plural(k,'Album','Alben')+' angelegt':'';afterEdit('i'+did);
  };
  /* ---------- Bearbeiten-Fenster („Stift“): Übersicht aller Angaben ---------- */
  var EOK=null;
